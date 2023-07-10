@@ -5,7 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+
 
 @Data
 @AllArgsConstructor
@@ -17,5 +18,5 @@ public class VideoRequest {
     private String description;
     private String url;
     private String category;
-    private Date creationDate;
+    private LocalDateTime creationDate;
 }
