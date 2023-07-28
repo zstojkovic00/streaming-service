@@ -1,6 +1,6 @@
 spring:
   application:
-    name: Security-Service
+    name: security-service
   datasource:
     url: jdbc:mysql://mysqldb:3306/user_security
     username: root
