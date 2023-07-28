@@ -1,4 +1,4 @@
-package dto;
+package com.zeljko.securityservice.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
