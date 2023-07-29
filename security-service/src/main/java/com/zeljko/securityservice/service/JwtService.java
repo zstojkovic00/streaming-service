@@ -48,11 +48,4 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    private String getSecret() {
-        // Retrieve the secret from the environment variable or configuration management system
-        String secret = System.getenv("SECRET");
-        log.info("Secret je" + secret);
-        return secret;
-    }
-
 }
