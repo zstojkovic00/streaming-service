@@ -1,18 +1,9 @@
-import './App.scss';
-import Home from "./pages/Home";
 import "./App.scss"
-import Navbar from "./components/Navbar/Navbar";
+import Home from "./pages/home/Home";
 
-
-
-function App() {
-  return (
-      <div className="App">
-        <div className="container">
-            <Navbar />
-        </div>
-      </div>
-  );
-}
+const App = () => {
+    return <Home/>;
+};
 
 export default App;
+

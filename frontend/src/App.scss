@@ -1,3 +1,9 @@
 :root{
-  --main-color: #0b0b0b
+  --main-color: #00233f;
+  --green: #a7ec01;
+  --grey: #f5f5f5;
+
+}
+* {
+  background-color: var(--main-color);
 }
