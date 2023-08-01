@@ -9,12 +9,11 @@ import SpiderManVideo from "../../assets/videos/marvel-spiderman.mp4"
 const ListItem = ({index}) => {
 
     const [isHovered, setIsHovered] = useState(false);
-    const trailer =
-        "https://player.vimeo.com/external/371433846.sd.mp4?s=236da2f3c0fd273d2c6d9a064f3ae35579b2bbdf&profile_id=139&oauth2_token_id=57447761";
+
     return (
         <div
             className="listItem"
-            style={{ left: isHovered && index * 350}}
+            style={{ left: isHovered  }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
