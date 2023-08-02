@@ -15,7 +15,6 @@
     object-fit: cover;
   }
 
-
   video {
     width: 100%;
     height: 140px;
@@ -36,6 +35,58 @@
 
     img {
       height: 140px;
+    }
+  }
+
+  .itemInfo {
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+
+    .icons {
+      display: flex;
+      margin-bottom: 10px;
+
+      .icon {
+        border: 2px solid white;
+        padding: 5px;
+        border-radius: 50%;
+        margin-right: 10px;
+        font-size: 20px;
+        transition: color 0.2s, border-color 0.2s, box-shadow 0.2s;
+      }
+
+      .icon:hover {
+        color: var(--green);
+        border-color: var(--green);
+        box-shadow: 0 0 5px var(--green);
+      }
+    }
+
+    .itemInfoTop {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: lightgray;
+
+      .limit {
+        border: 1px solid gray;
+        padding: 1px 3px;
+        margin: 0 10px;
+      }
+    }
+
+    .desc {
+      font-size: 13px;
+      margin-bottom: 10px;
+      color: white;
+    }
+
+    .genre {
+      font-size: 14px;
+      color: lightgray;
     }
   }
 }

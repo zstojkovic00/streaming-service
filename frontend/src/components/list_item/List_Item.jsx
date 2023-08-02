@@ -13,7 +13,6 @@ const ListItem = ({index}) => {
     return (
         <div
             className="listItem"
-            style={{ left: isHovered  }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
