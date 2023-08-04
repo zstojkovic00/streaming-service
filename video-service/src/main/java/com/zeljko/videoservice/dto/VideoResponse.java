@@ -16,8 +16,11 @@ public class VideoResponse {
     private String id;
     private String name;
     private String description;
-    private String url;
     private String category;
+    private String duration;
+    private String genre;
+    private String ageRestriction;
+    private Integer releasedYear;
     private LocalDateTime creationDate;
 
 }

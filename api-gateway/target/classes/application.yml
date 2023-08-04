@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: video-service
+          uri: lb://video-service
+          predicates:
+            - Path=/api/v1/video
+          filters:
+            - AuthenticationFilter
+        - id: security-service
+          uri: lb://security-service
+          predicates:
+            - Path=/auth/**
+        - id: discovery-service
+          uri: http://localhost:8761
+          predicates:
+            - Path=/eureka/web
+          filters:
+            - SetPath=/
+        - id: discovery-service-static
+          uri: http://localhost:8761
+          predicates:
+            - Path=/eureka/**
+server:
+  port: 8080
+
+
+logging:
+  level:
+    org.springframework.cloud.gateway.route.RouterDefinitionLocator: INFO
+    org.springframework.cloud.gateway.route.gateway: TRACE
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka

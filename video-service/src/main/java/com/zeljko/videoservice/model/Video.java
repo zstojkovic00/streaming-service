@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
+import java.io.InputStream;
 
-@Document(value = "product")
+@Document(value = "video")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -19,10 +19,7 @@ public class Video {
 
     @Id
     private String id;
-    private String name;
-    private String description;
-    private String url;
-    private String category;
-    private LocalDateTime creationDate;
+    private String title;
+    private InputStream stream;
 
 }

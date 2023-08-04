@@ -16,7 +16,11 @@ public class VideoRequest {
 
     private String name;
     private String description;
-    private String url;
+    private byte[] videoData;
     private String category;
+    private String duration;
+    private String genre;
+    private String ageRestriction;
+    private Integer releasedYear;
     private LocalDateTime creationDate;
 }

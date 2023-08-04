@@ -1,14 +1,24 @@
 package com.zeljko.videoservice.service;
 
 
-import com.zeljko.videoservice.dto.VideoRequest;
-import com.zeljko.videoservice.dto.VideoResponse;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
+import com.mongodb.client.gridfs.GridFSFindIterable;
+import com.mongodb.client.gridfs.model.GridFSFile;
 import com.zeljko.videoservice.model.Video;
 import com.zeljko.videoservice.repository.VideoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.gridfs.GridFsOperations;
+import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -18,36 +28,82 @@ import java.util.List;
 public class VideoService {
 
     private final VideoRepository videoRepository;
+    private final GridFsTemplate gridFsTemplate;
+    private final GridFsOperations gridFsOperations;
 
-    public void createVideo(VideoRequest videoRequest){
 
-        Video video = Video.builder()
-                .name(videoRequest.getName())
-                .description(videoRequest.getDescription())
-                .url(videoRequest.getUrl())
-                .category(videoRequest.getCategory())
-                .creationDate(LocalDateTime.now())
-                .build();
+    public String addVideo(String title, MultipartFile videoFile) throws IOException {
 
-        videoRepository.save(video);
-        log.info("Video {} is saved", video.getId());
+        DBObject metaData = new BasicDBObject();
+
+        metaData.put("type", "video");
+        metaData.put("title", title);
+        ObjectId id = gridFsTemplate.store(
+                videoFile.getInputStream(), videoFile.getName(), videoFile.getContentType(), metaData);
+        return id.toString();
 
     }
 
-    public List<VideoResponse> getAllVideos() {
-       List<Video> videos = videoRepository.findAll();
+//        Video video = Video.builder()
+//                .name(videoRequest.getName())
+//                .description(videoRequest.getDescription())
+//                .videoData(videoData)
+//                .category(videoRequest.getCategory())
+//                .duration(videoRequest.getDuration())
+//                .genre(videoRequest.getGenre())
+//                .ageRestriction(videoRequest.getAgeRestriction())
+//                .releasedYear(String.valueOf(videoRequest.getReleasedYear()))
+//                .creationDate(LocalDateTime.now())
+//                .build();
+//
+//        videoRepository.save(video);
+//        log.info("Video {} is saved", video.getId());
 
-       return videos.stream().map(this::mapToVideoResponse).toList();
+    public Video getVideo(String id) throws IllegalStateException, IOException {
+        GridFSFile file = gridFsTemplate.findOne(new Query(Criteria.where("_id").is(id)));
+        Video video = new Video();
+        video.setTitle(file.getMetadata().get("title").toString());
+        video.setStream(gridFsOperations.getResource(file).getInputStream());
+        return video;
     }
 
-    private VideoResponse mapToVideoResponse(Video video) {
-        return VideoResponse.builder()
-                .id(video.getId())
-                .name(video.getName())
-                .description(video.getDescription())
-                .url(video.getUrl())
-                .category(video.getCategory())
-                .creationDate(video.getCreationDate())
-                .build();
+
+    public List<Video> getAllVideo() throws IOException {
+        List<Video> videos = new ArrayList<>();
+
+        GridFSFindIterable files = gridFsTemplate.find(new Query());
+        files.forEach(file -> {
+            Video video = new Video();
+            video.setTitle(file.getMetadata().get("title").toString());
+            try {
+                video.setStream(gridFsTemplate.getResource(file).getInputStream());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            videos.add(video);
+        });
+
+        return videos;
     }
 }
+
+//    public List<VideoResponse> getAllVideos() {
+//       List<Video> videos = videoRepository.findAll();
+//
+//       return videos.stream().map(this::mapToVideoResponse).toList();
+//    }
+//
+//    private VideoResponse mapToVideoResponse(Video video) {
+//        return VideoResponse.builder()
+//                .id(video.getId())
+//                .name(video.getName())
+//                .videoData(video.getVideoData())
+//                .description(video.getDescription())
+//                .category(video.getCategory())
+//                .duration(video.getDuration())
+//                .genre(video.getGenre())
+//                .ageRestriction(video.getAgeRestriction())
+//                .creationDate(video.getCreationDate())
+//                .build();
+//    }
+
