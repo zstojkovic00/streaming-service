@@ -25,9 +25,15 @@ public class VideoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public String createVideo(@RequestParam("title") String title, @RequestParam("file") MultipartFile videoFile) throws IOException {
-        videoService.addVideo(title, videoFile);
-        String id = videoService.addVideo(title, videoFile);
+    public String createVideo(@RequestParam("title") String title,
+                              @RequestParam("description") String description,
+                              @RequestParam("photoUrl") String photoUrl,
+                              @RequestParam("duration") String duration,
+                              @RequestParam("ageRestriction") Integer ageRestriction,
+                              @RequestParam("genre") String genre,
+                              @RequestParam("file") MultipartFile videoFile) throws IOException {
+        videoService.addVideo(title, description, photoUrl, duration, ageRestriction, genre, videoFile);
+        String id = videoService.addVideo(title, description, photoUrl, duration, ageRestriction, genre, videoFile);
         return "redirect:/videos/" + id;
     }
 

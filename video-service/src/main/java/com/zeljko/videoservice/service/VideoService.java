@@ -32,14 +32,23 @@ public class VideoService {
     private final GridFsOperations gridFsOperations;
 
 
-    public String addVideo(String title, MultipartFile videoFile) throws IOException {
+    public String addVideo(String title, String description, String photoUrl, String duration, Integer ageRestriction, String genre, MultipartFile videoFile) throws IOException {
 
         DBObject metaData = new BasicDBObject();
+        ObjectId id = new ObjectId();
 
         metaData.put("type", "video");
         metaData.put("title", title);
-        ObjectId id = gridFsTemplate.store(
-                videoFile.getInputStream(), videoFile.getName(), videoFile.getContentType(), metaData);
+        metaData.put("description", description);
+        metaData.put("photoUrl", photoUrl);
+        metaData.put("duration", duration);
+        metaData.put("ageRestriction", ageRestriction);
+        metaData.put("genre", genre);
+        metaData.put("videoId", id.toString());
+
+        gridFsTemplate.store(videoFile.getInputStream(), videoFile.getName(), videoFile.getContentType(), metaData);
+
+
         return id.toString();
 
     }

@@ -3,7 +3,8 @@ import Home from "./pages/home/Home";
 import FullScreenVideo from "./pages/fullScreenVideo/fullScreenVideo";
 
 const App = () => {
-    return <FullScreenVideo/>;
+    return <Home/>;
+
 };
 
 export default App;

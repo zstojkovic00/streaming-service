@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import "./List_Item.scss"
 import SpiderMan from "../../assets/images/marvel-spiderman.png"
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -6,9 +6,11 @@ import AddIcon from '@mui/icons-material/Add';
 import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import ThumbDownAltOutlinedIcon from '@mui/icons-material/ThumbDownAltOutlined';
 import SpiderManVideo from "../../assets/videos/marvel-spiderman.mp4"
-const ListItem = ({index}) => {
+
+const ListItem = ({ video }) => {
 
     const [isHovered, setIsHovered] = useState(false);
+
 
     return (
         <div
@@ -16,10 +18,10 @@ const ListItem = ({index}) => {
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            <img src={SpiderMan} alt="spiderman" />
+            <img src={`${video.stream.gridFSFile.metadata?.photoUrl}`} alt="spiderman" />
             {isHovered && (
                 <>
-                    <video src={SpiderManVideo} autoPlay={true} loop />
+                    <video src={`http://localhost:8081/api/v1/video/stream/${video.stream.gridFSFile.metadata?.videoId}`} autoPlay={true} loop />
                     <div className="itemInfo">
                         <div className="icons">
                             <PlayArrowIcon className="icon" />
@@ -33,10 +35,9 @@ const ListItem = ({index}) => {
                             <span>1999</span>
                         </div>
                         <div className="desc">
-                            Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                            Praesentium hic rem eveniet error possimus, neque ex doloribus.
+                            {video.title}
                         </div>
-                        <div className="genre">Action</div>
+                        <div className="genre">{video.stream.gridFSFile.metadata?.description}</div>
                     </div>
                 </>
             )}

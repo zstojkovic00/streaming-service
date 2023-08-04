@@ -1,14 +1,25 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import "./List.scss"
 import ListItem from "../list_item/List_Item"
 import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
 import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
+import {getAllVideos} from "../../api/videoService";
+
 const List = () => {
 
     const [isMoved, setIsMoved] = useState(false);
     const [slideNumber, setSlideNumber] = useState(0);
-
     const listRef = useRef();
+    const [videoList, setVideoList] = useState([]);
+
+
+    useEffect(()=>{
+        getAllVideos().then((response)=>{
+            setVideoList(response.data);
+            console.log(response.data);
+        }).catch(()=>{
+        })
+    },[])
 
     const handleClick = (direction) => {
         setIsMoved(true);
@@ -30,19 +41,12 @@ const List = () => {
                 <ArrowBackIosOutlinedIcon
                     className="sliderArrow left"
                     onClick={() => handleClick("left")}
-                    style={{ display: !isMoved && "none" }}
+                    style={{display: !isMoved && "none"}}
                 />
                 <div className="container" ref={listRef}>
-                    <ListItem index={0} />
-                    <ListItem index={1} />
-                    <ListItem index={2} />
-                    <ListItem index={3} />
-                    <ListItem index={4} />
-                    <ListItem index={5} />
-                    <ListItem index={6} />
-                    <ListItem index={7} />
-                    <ListItem index={8} />
-                    <ListItem index={9} />
+                    {videoList.map((video, index) => (
+                        <ListItem key={index} video={video} />
+                    ))}
                 </div>
                 <ArrowForwardIosOutlinedIcon
                     className="sliderArrow right"
