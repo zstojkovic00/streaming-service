@@ -10,9 +10,9 @@ const FullScreenVideo = () => {
 
     return (
         <div className="watch">
-            <Link to={"/"}>
+            <Link to={"/"} >
             <div className="back">
-                <ArrowBackIcon />
+                <ArrowBackIcon className="icon" />
                 Home
             </div>
             </Link>

@@ -30,14 +30,21 @@
       }
 
     }
-
-
     .right {
       display: flex;
       align-items: center;
       margin-right: 2%;
 
-
+      .loginButton {
+        background-color: var(--green);
+        border: none;
+        color: var(--main-color);
+        border-radius: 5px;
+        padding: 5px 15px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+      }
       .icon {
         font-size: 38px;
         margin: 0px 5px;
@@ -66,7 +73,5 @@
         }
       }
     }
-
-
   }
 }
