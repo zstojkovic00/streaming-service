@@ -1,4 +1,5 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
+import { Link } from 'react-router-dom';
 import "./List_Item.scss"
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import AddIcon from '@mui/icons-material/Add';
@@ -22,11 +23,14 @@ const ListItem = ({ video }) => {
                     <video src={`http://localhost:8081/api/v1/video/stream/${video.id}`} autoPlay={true} loop />
                     <div className="itemInfo">
                         <div className="icons">
-                            <PlayArrowIcon className="icon" />
+                            <Link to={`video/${video.title}/${video.id}`}>
+                                <PlayArrowIcon className="icon" />
+                            </Link>
                             <AddIcon className="icon" />
                             <ThumbUpOutlinedIcon className="icon" />
                             <ThumbDownAltOutlinedIcon className="icon" />
                         </div>
+
                         <div className="itemInfoTop">
                             <span>{video.stream.gridFSFile.metadata?.duration}</span>
                             <span className="limit">+{video.stream.gridFSFile.metadata?.ageRestriction}</span>

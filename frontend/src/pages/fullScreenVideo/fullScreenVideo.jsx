@@ -1,20 +1,26 @@
 import React from 'react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import Voyage from "../../assets/videos/voyage.mp4"
+import {useParams} from "react-router-dom";
 import "./fullScreenVideo.scss";
+import {Link} from "react-router-dom";
 
 const FullScreenVideo = () => {
+
+    const {videoId} = useParams();
+
     return (
         <div className="watch">
+            <Link to={"/"}>
             <div className="back">
                 <ArrowBackIcon />
                 Home
             </div>
+            </Link>
             <video
                 className="video"
                 autoPlay
                 controls
-                src={Voyage}
+                src={`http://localhost:8081/api/v1/video/stream/${videoId}`}
             />
         </div>
     );
