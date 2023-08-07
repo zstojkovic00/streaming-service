@@ -12,7 +12,7 @@ const Login = ({loading,error,...props}) => {
     const navigate = useNavigate();
 
     const [values, setValues] = useState({
-        email: '',
+        username: '',
         password: ''
     });
 
@@ -25,8 +25,8 @@ const Login = ({loading,error,...props}) => {
             console.log("response",res);
             if(res.status===200){
                 props.setUser(res.data);
+                console.log(res.data);
                 navigate("/");
-                window.location.reload();
             }
 
 
@@ -37,6 +37,7 @@ const Login = ({loading,error,...props}) => {
         });
 
     }
+
 
     const handleChange = (e) => {
         e.persist();
@@ -61,10 +62,10 @@ const Login = ({loading,error,...props}) => {
 
                     <form className="login-form" onSubmit={handleSubmit}>
                         <h2> Welcome back!</h2>
-                        <label htmlFor="email">email</label>
-                        <input className="input_form" value={values.email} onChange={handleChange} type="email"
-                               id="email"
-                               name="email"/>
+                        <label htmlFor="username">username</label>
+                        <input className="input_form" value={values.name} onChange={handleChange} type="username"
+                               id="username"
+                               name="username"/>
                         <br/>
                         <label htmlFor="password">password</label>
                         <input className="input_form" value={values.password} onChange={handleChange} type="password"

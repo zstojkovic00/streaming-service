@@ -15,7 +15,7 @@ export const userJoin=(authRequest)=>{
 export const userLogin=(authRequest)=>{
     return axios({
         'method':'POST',
-        'url':"http://localhost:8080/auth/token",
+        'url':"http://localhost:8080/auth/login",
         'data':authRequest
     })
 }

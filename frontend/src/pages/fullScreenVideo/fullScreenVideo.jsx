@@ -20,7 +20,7 @@ const FullScreenVideo = () => {
                 className="video"
                 autoPlay
                 controls
-                src={`http://localhost:8081/api/v1/video/stream/${videoId}`}
+                src={`http://localhost:8080/api/v1/video/stream/${videoId}`}
             />
         </div>
     );

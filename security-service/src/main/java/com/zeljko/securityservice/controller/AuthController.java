@@ -24,7 +24,7 @@ public class AuthController {
         return service.saveUser(user);
     }
 
-    @PostMapping("/token")
+    @PostMapping("/login")
     public String getToken(@RequestBody AuthRequest authRequest) {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
         if (authenticate.isAuthenticated()) {
