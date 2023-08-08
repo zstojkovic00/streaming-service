@@ -25,8 +25,11 @@ const Login = ({loading,error,...props}) => {
             console.log("response",res);
             if(res.status===200){
                 props.setUser(res.data);
+                localStorage.setItem('USER_KEY', res.data);
                 console.log(res.data);
                 navigate("/");
+                // window.location.reload();
+
             }
 
 

@@ -16,7 +16,8 @@ const List = () => {
     useEffect(()=>{
         getAllVideos().then((response)=>{
             setVideoList(response.data);
-        }).catch(()=>{
+        }).catch((err)=>{
+            console.log(err);
         })
     },[])
 

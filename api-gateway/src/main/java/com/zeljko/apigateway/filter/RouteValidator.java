@@ -12,13 +12,13 @@ public class RouteValidator {
         public static final List<String> openApiEndpoints = List.of(
                 "/auth",
                 "/eureka",
-                "/api/v1/video"
+                "/api/v1/video/stream"
         );
 
         public Predicate<ServerHttpRequest> isSecured =
                 request -> openApiEndpoints
                         .stream()
-                        .noneMatch(uri -> request.getURI().getPath().startsWith(uri));
+                        .noneMatch(uri -> request.getURI().getPath().contains(uri));
 
 
 }

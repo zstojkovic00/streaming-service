@@ -1,8 +1,5 @@
 import axios from 'axios';
 
-const getToken=()=>{
-    return localStorage.getItem('USER_KEY');
-}
 
 export const userJoin=(authRequest)=>{
     return axios({
