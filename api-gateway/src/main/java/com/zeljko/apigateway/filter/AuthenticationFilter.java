@@ -15,8 +15,6 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     @Autowired
     private RouteValidator validator;
 
-    //    @Autowired
-//    private RestTemplate template;
     @Autowired
     private JwtService jwtService;
 
@@ -27,13 +25,6 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     @Override
     public GatewayFilter apply(Config config) {
         return ((exchange, chain) -> {
-
-
-            ServerHttpRequest request = exchange.getRequest();
-            int port = request.getURI().getPort();
-            if (port != 8080) {
-                throw new RuntimeException("Access denied. Requests allowed only through the API Gateway (port 8080).");
-            }
 
             if (validator.isSecured.test(exchange.getRequest())) {
                 //header contains token or not
