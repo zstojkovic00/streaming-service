@@ -25,34 +25,41 @@ public class VideoController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<String> createVideo(@RequestParam("title") String title,
-                              @RequestParam("description") String description,
-                              @RequestParam("photoUrl") String photoUrl,
-                              @RequestParam("duration") String duration,
-                              @RequestParam("ageRestriction") Integer ageRestriction,
-                              @RequestParam("genre") String genre,
-                              @RequestParam("file") MultipartFile videoFile) throws IOException {
+                                              @RequestParam("description") String description,
+                                              @RequestParam("photoUrl") String photoUrl,
+                                              @RequestParam("duration") String duration,
+                                              @RequestParam("ageRestriction") Integer ageRestriction,
+                                              @RequestParam("genre") String genre,
+                                              @RequestParam("file") MultipartFile videoFile) throws IOException {
         String response = videoService.addVideo(title, description, photoUrl, duration, ageRestriction, genre, videoFile);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public ResponseEntity<List<Video>> getAllVideo() throws Exception {
+    public ResponseEntity<List<Video>> getAllVideo() {
         List<Video> videos = videoService.getAllVideo();
         return ResponseEntity.ok(videos);
     }
 
     @GetMapping("/{id}")
-    public Video getVideo(@PathVariable String id, Model model) throws Exception {
+    public ResponseEntity<?> getVideo(@PathVariable String id, Model model) {
         Video video = videoService.getVideo(id);
         model.addAttribute("title", video.getTitle());
         model.addAttribute("url", "/videos/stream/" + id);
-        return video;
+        return ResponseEntity.ok(video);
     }
 
     @GetMapping("/stream/{id}")
     public void streamVideo(@PathVariable String id, HttpServletResponse response) throws Exception {
         Video video = videoService.getVideo(id);
+        // copies the content of the video's input stream to the output stream of the http response
         FileCopyUtils.copy(video.getStream(), response.getOutputStream());
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteVideo(@PathVariable String id) {
+        videoService.deleteVideo(id);
+        return ResponseEntity.ok("Video deleted successfully");
+
+    }
 }

@@ -7,6 +7,7 @@ import com.mongodb.client.gridfs.GridFSFindIterable;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.zeljko.videoservice.model.Video;
 import com.zeljko.videoservice.repository.VideoRepository;
+import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -48,33 +49,64 @@ public class VideoService {
         return id.toString();
     }
 
-    public Video getVideo(String id) throws IllegalStateException, IOException {
-        GridFSFile file = gridFsTemplate.findOne(new Query(Criteria.where("_id").is(id)));
-        Video video = new Video();
-        video.setId(file.getObjectId().toString());
-        video.setTitle(file.getMetadata().get("title").toString());
-        video.setStream(gridFsOperations.getResource(file).getInputStream());
-        return video;
-    }
+    public Video getVideo(String id) {
+        try {
+            GridFSFile file = gridFsTemplate.findOne(new Query(Criteria.where("_id").is(id)));
 
-    public List<Video> getAllVideo() throws IOException {
-        List<Video> videos = new ArrayList<>();
+            if (file == null) {
+                log.info("Video not found with id {}" ,id);
+                throw new NotFoundException("Video not found with id: " + id);
+            }
 
-        GridFSFindIterable files = gridFsTemplate.find(new Query());
-        files.forEach(file -> {
             Video video = new Video();
             video.setId(file.getObjectId().toString());
             video.setTitle(file.getMetadata().get("title").toString());
-            try {
-                video.setStream(gridFsTemplate.getResource(file).getInputStream());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            videos.add(video);
-        });
+            video.setStream(gridFsOperations.getResource(file).getInputStream());
+            return video;
+        } catch (Exception e) {
+            log.error("An error occurred while retrieving the video with id {}", id, e);
+            throw new RuntimeException("Failed to retrieve the video");
+        }
+    }
 
+
+    public List<Video> getAllVideo() {
+        List<Video> videos = new ArrayList<>();
+
+        try {
+            GridFSFindIterable files = gridFsTemplate.find(new Query());
+            files.forEach(file -> {
+                Video video = new Video();
+                video.setId(file.getObjectId().toString());
+                video.setTitle(file.getMetadata().get("title").toString());
+                try {
+                    video.setStream(gridFsTemplate.getResource(file).getInputStream());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                videos.add(video);
+            });
+        } catch (RuntimeException e) {
+            log.error("Error retrieving videos: {}", e.getMessage());
+            throw new RuntimeException("An error occurred while retrieving videos");
+        }
         return videos;
     }
+
+
+    public void deleteVideo(String id) {
+        GridFSFile file = gridFsTemplate.findOne(new Query(Criteria.where("_id").is(id)));
+
+        if (file != null) {
+            gridFsTemplate.delete(new Query(Criteria.where("_id").is(id)));
+            videoRepository.deleteById(id);
+            log.info("Deleted video with id: {}", id);
+        } else {
+            log.warn("Video with id {} not found.", id);
+            throw new NotFoundException("Video not found with id: " + id);
+        }
+    }
+
 }
 
 
