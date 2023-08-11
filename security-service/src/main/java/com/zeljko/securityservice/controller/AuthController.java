@@ -1,14 +1,11 @@
 package com.zeljko.securityservice.controller;
 
-import com.zeljko.securityservice.entity.UserCredential;
+import com.zeljko.securityservice.request.AuthResponse;
+import com.zeljko.securityservice.request.RegisterRequest;
 import com.zeljko.securityservice.service.AuthService;
-import com.zeljko.securityservice.dto.AuthRequest;
+import com.zeljko.securityservice.request.AuthRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,32 +14,18 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService service;
-    private final AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
-    public String addNewUser(@RequestBody UserCredential user) {
-        return service.saveUser(user);
+    public ResponseEntity<AuthResponse> register(
+            @RequestBody RegisterRequest request
+    ) {
+        return ResponseEntity.ok(service.register(request));
     }
 
     @PostMapping("/login")
-    public String getToken(@RequestBody AuthRequest authRequest) {
-        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
-        if (authenticate.isAuthenticated()) {
-            return service.generateToken(authRequest.getUsername());
-        } else {
-            throw new RuntimeException("invalid access");
-        }
+    public ResponseEntity<AuthResponse> authenticate(
+            @RequestBody AuthRequest request
+    ) {
+        return ResponseEntity.ok(service.authenticate(request));
     }
-    @GetMapping("/validate")
-    public ResponseEntity<String> validateToken(@RequestParam("token") String token) {
-        try {
-            service.validateToken(token);
-            return ResponseEntity.ok("Token is valid");
-        } catch (io.jsonwebtoken.security.SignatureException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Token is not valid: " + ex.getMessage());
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
-        }
-    }
-
 }

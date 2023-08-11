@@ -11,15 +11,15 @@ import java.security.Key;
 
 @Service
 public class JwtService {
-    public static final String SECRET = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
+    private static final String SECRET_KEY = "gs6X3ofgpcREy4RzUzgcrX8W0/qzNugi5pzzTHH5YBXfxsx4LxUPji6GSuRmFBtw";
 
     public void validateToken(final String token) {
-        Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token);
+        Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token);
     }
 
-    private Key getSignKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET);
-        return Keys.hmacShaKeyFor(keyBytes);
+    private Key getSignInKey() {
+        byte[] keyByte = Decoders.BASE64.decode(SECRET_KEY);
+        return Keys.hmacShaKeyFor(keyByte);
     }
 
 }
