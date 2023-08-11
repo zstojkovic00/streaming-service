@@ -1,6 +1,7 @@
 package com.zeljko.videoservice.controller;
 
 
+import com.zeljko.videoservice.dto.UpdateProgressRequest;
 import com.zeljko.videoservice.model.Video;
 import com.zeljko.videoservice.service.VideoService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -62,4 +63,11 @@ public class VideoController {
         return ResponseEntity.ok("Video deleted successfully");
 
     }
+
+    @PutMapping("/progress")
+    public ResponseEntity<String> updateVideoProgress(@RequestBody UpdateProgressRequest request) {
+        videoService.updateVideoProgress(request.getUserId(), request.getVideoId(), request.getProgress());
+        return ResponseEntity.ok("Video progress updated successfully");
+    }
+
 }

@@ -13,19 +13,15 @@ const Navbar = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     useEffect(() => {
-        const isLoggedInStorage = localStorage.getItem('isLoggedIn') === 'true';
+        const token = localStorage.getItem('USER_KEY')
 
-        if (isLoggedInStorage) {
-            setIsLoggedIn(isLoggedInStorage);
-        } else {
-            localStorage.setItem('isLoggedIn', 'true');
+        if(token){
             setIsLoggedIn(true);
         }
     }, []);
 
     const logout =() => {
         localStorage.clear();
-        localStorage.removeItem('isLoggedIn');
         setIsLoggedIn(false);
         navigate('/');
     }

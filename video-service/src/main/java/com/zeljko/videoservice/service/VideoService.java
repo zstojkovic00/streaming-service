@@ -6,6 +6,8 @@ import com.mongodb.DBObject;
 import com.mongodb.client.gridfs.GridFSFindIterable;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.zeljko.videoservice.model.Video;
+import com.zeljko.videoservice.model.VideoProgress;
+import com.zeljko.videoservice.repository.VideoProgressRepository;
 import com.zeljko.videoservice.repository.VideoRepository;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ import java.util.List;
 public class VideoService {
 
     private final VideoRepository videoRepository;
+    private final VideoProgressRepository videoProgressRepository;
     private final GridFsTemplate gridFsTemplate;
     private final GridFsOperations gridFsOperations;
 
@@ -105,6 +108,17 @@ public class VideoService {
             log.warn("Video with id {} not found.", id);
             throw new NotFoundException("Video not found with id: " + id);
         }
+    }
+
+    public void updateVideoProgress(Integer userId, String videoId, double progress) {
+        log.debug("Updating video progress for userId: {}, videoId: {}, progress: {}", userId, videoId, progress);
+
+        VideoProgress videoProgress = videoProgressRepository.findByUserIdAndVideoId(userId, videoId)
+                .orElseGet(() -> new VideoProgress(userId, videoId));
+
+        videoProgress.setProgress(progress);
+
+        videoProgressRepository.save(videoProgress);
     }
 
 }
