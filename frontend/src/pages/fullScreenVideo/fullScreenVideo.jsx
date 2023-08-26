@@ -3,8 +3,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {useParams} from "react-router-dom";
 import "./fullScreenVideo.scss";
 import {Link} from "react-router-dom";
-import {getCurrentUser} from "../../api/authenticationService";
-import {updateVideoProgress, getToken} from "../../api/videoService";
+import {getCurrentUser} from "../../services/authenticationService";
+import {updateVideoProgress, getToken} from "../../services/videoService";
 
 
 const FullScreenVideo = () => {
@@ -12,50 +12,57 @@ const FullScreenVideo = () => {
     const {videoId} = useParams();
     const videoRef = useRef(null);
     const [userId, setUserId] = useState(null);
+    const [lastProgressSent, setLastProgressSent] = useState(null);
+
 
     const token = getToken();
 
 
-        useEffect(() => {
-            getCurrentUser()
-                .then((response) => {
-                    setUserId(response.data.id);
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
-        }, []);
+    useEffect(() => {
+        getCurrentUser()
+            .then((response) => {
+                setUserId(response.data.id);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }, []);
 
 
-        const handleTimeUpdate = () => {
-            const currentTime = videoRef.current.currentTime;
-            const duration = videoRef.current.duration;
+    const handleTimeUpdate = () => {
+        const currentTime = videoRef.current.currentTime;
+        const duration = videoRef.current.duration;
 
-            const progress = (currentTime / duration) * 100;
-            console.log(userId);
-            console.log(progress)
-            console.log(videoId)
+        const progress = (currentTime / duration) * 100;
 
-            updateVideoProgress(userId, videoId, progress)
-                .then(response => {
-                    console.log(response.data);
-                    console.log("Video progress updated successfully");
-                })
-                .catch(error => {
-                    console.error("Error updating video progress", error);
-                });
-        };
+        let isMovieWatched = false;
 
-
+        if (progress > 75) {
+            isMovieWatched = true;
+        }
+        if (lastProgressSent === null || progress - lastProgressSent >= 5) {
+            if (progress < 80) {
+                updateVideoProgress(userId, videoId, progress, isMovieWatched)
+                    .then(response => {
+                        console.log(response.data);
+                        console.log("Video progress updated successfully");
+                        setLastProgressSent(progress);
+                    })
+                    .catch(error => {
+                        console.error("Error updating video progress", error);
+                    });
+            }
+        }
+    };
 
 
     return (
         <div className="watch">
-            <Link to={"/"} >
-            <div className="back">
-                <ArrowBackIcon className="icon" />
-                Home
-            </div>
+            <Link to={"/"}>
+                <div className="back">
+                    <ArrowBackIcon className="icon"/>
+                    Home
+                </div>
             </Link>
             <video
                 className="video"

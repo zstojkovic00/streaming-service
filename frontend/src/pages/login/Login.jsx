@@ -4,7 +4,7 @@ import Yettel from "../../assets/images/yettel.png";
 import {authenticate, authSuccess} from '../../redux/authActions';
 import {Link, useNavigate} from "react-router-dom";
 import {connect} from 'react-redux';
-import {userLogin} from "../../api/authenticationService";
+import {userLogin} from "../../services/authenticationService";
 
 
 const Login = ({loading,error,...props}) => {

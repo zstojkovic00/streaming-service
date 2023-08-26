@@ -21,14 +21,15 @@ export const getStreamVideo = (videoId) => {
     })
 }
 
-export const updateVideoProgress = (userId, videoId, progress) => {
+export const updateVideoProgress = (userId, videoId, progress, isMovieWatched) => {
     return axios({
         method: 'PUT',
         url: `http://localhost:8080/api/v1/video/progress`,
         data: {
             userId: userId,
             videoId: videoId,
-            progress: progress
+            progress: progress,
+            isMovieWatched: isMovieWatched
         },
         headers: {
             'Authorization': 'Bearer ' + getToken()

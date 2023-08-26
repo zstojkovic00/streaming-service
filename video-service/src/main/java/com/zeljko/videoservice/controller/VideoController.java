@@ -66,7 +66,7 @@ public class VideoController {
 
     @PutMapping("/progress")
     public ResponseEntity<String> updateVideoProgress(@RequestBody UpdateProgressRequest request) {
-        videoService.updateVideoProgress(request.getUserId(), request.getVideoId(), request.getProgress());
+        videoService.updateVideoProgress(request.getUserId(), request.getVideoId(), request.getProgress(), request.getIsMovieWatched());
         return ResponseEntity.ok("Video progress updated successfully");
     }
 

@@ -110,13 +110,14 @@ public class VideoService {
         }
     }
 
-    public void updateVideoProgress(Integer userId, String videoId, double progress) {
-        log.debug("Updating video progress for userId: {}, videoId: {}, progress: {}", userId, videoId, progress);
+    public void updateVideoProgress(Integer userId, String videoId, double progress, boolean isMovieWatched) {
+        log.debug("Updating video progress for userId: {}, videoId: {}, progress: {}, is movie watched: {}", userId, videoId, progress, isMovieWatched);
 
         VideoProgress videoProgress = videoProgressRepository.findByUserIdAndVideoId(userId, videoId)
                 .orElseGet(() -> new VideoProgress(userId, videoId));
 
         videoProgress.setProgress(progress);
+        videoProgress.setMovieWatched(isMovieWatched);
 
         videoProgressRepository.save(videoProgress);
     }

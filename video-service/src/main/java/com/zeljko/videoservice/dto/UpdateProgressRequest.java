@@ -13,4 +13,5 @@ public class UpdateProgressRequest {
     private Integer userId;
     private String videoId;
     private Double progress;
+    private Boolean isMovieWatched;
 }

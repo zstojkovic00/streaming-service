@@ -3,7 +3,7 @@ import "./List.scss"
 import ListItem from "../list_item/List_Item"
 import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
 import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
-import {getAllVideos} from "../../api/videoService";
+import {getAllVideos} from "../../services/videoService";
 
 const List = () => {
 
