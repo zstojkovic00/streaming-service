@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: badge-service
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/badge-service
+
+server:
+  port: 8082
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+
+
+
