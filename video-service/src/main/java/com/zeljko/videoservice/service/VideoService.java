@@ -16,6 +16,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,6 +34,7 @@ public class VideoService {
     private final VideoProgressRepository videoProgressRepository;
     private final GridFsTemplate gridFsTemplate;
     private final GridFsOperations gridFsOperations;
+    private final KafkaTemplate<String, VideoProgress> kafkaTemplate;
 
 
     public String addVideo(String title, String description, String photoUrl, String duration, Integer ageRestriction, String genre, MultipartFile videoFile) throws IOException {
@@ -120,6 +122,7 @@ public class VideoService {
         videoProgress.setMovieWatched(isMovieWatched);
 
         videoProgressRepository.save(videoProgress);
+        kafkaTemplate.send("video-progress", videoProgress);
     }
 
 }

@@ -10,6 +10,10 @@ spring:
             - Path=/api/v1/video/**
           filters:
             - AuthenticationFilter
+        - id: badge-service
+          uri: lb://badge-service
+          predicates:
+            - Path=/api/v1/badge/**
         - id: security-service
           uri: lb://security-service
           predicates:
