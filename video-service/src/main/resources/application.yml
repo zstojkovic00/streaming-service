@@ -10,10 +10,15 @@ spring:
       max-file-size: 200MB
       max-request-size: 200MB
   kafka:
-    bootstrap-servers: broker:9092
+    bootstrap-servers: localhost:9092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        "[spring.json.type.mapping]": event:com.zeljko.videoservice.event.VideoProgressMessage
+        spring.json.trusted.packages: "*"
+    template:
+      default-topic: video-progress
 server:
   port: 8081
 

@@ -9,11 +9,4 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class BadgeService {
 
-
-    @KafkaListener(topics = "video-progress", groupId = "badge-service-group")
-    public void processVideoProgress(VideoProgressMessage progressMessage) {
-        if (progressMessage.getIsMovieWatched()) {
-            log.info("Super super");
-        }
-    }
 }

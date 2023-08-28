@@ -5,6 +5,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.client.gridfs.GridFSFindIterable;
 import com.mongodb.client.gridfs.model.GridFSFile;
+import com.zeljko.videoservice.event.VideoProgressMessage;
 import com.zeljko.videoservice.model.Video;
 import com.zeljko.videoservice.model.VideoProgress;
 import com.zeljko.videoservice.repository.VideoProgressRepository;
@@ -34,7 +35,7 @@ public class VideoService {
     private final VideoProgressRepository videoProgressRepository;
     private final GridFsTemplate gridFsTemplate;
     private final GridFsOperations gridFsOperations;
-    private final KafkaTemplate<String, VideoProgress> kafkaTemplate;
+    private final KafkaTemplate<String, VideoProgressMessage> kafkaTemplate;
 
 
     public String addVideo(String title, String description, String photoUrl, String duration, Integer ageRestriction, String genre, MultipartFile videoFile) throws IOException {
@@ -122,7 +123,12 @@ public class VideoService {
         videoProgress.setMovieWatched(isMovieWatched);
 
         videoProgressRepository.save(videoProgress);
-        kafkaTemplate.send("video-progress", videoProgress);
+
+        kafkaTemplate.send("video-progress",new VideoProgressMessage
+                (videoProgress.getUserId(),
+                        videoProgress.getVideoId(),
+                        videoProgress.getProgress(),
+                        videoProgress.isMovieWatched()));
     }
 
 }

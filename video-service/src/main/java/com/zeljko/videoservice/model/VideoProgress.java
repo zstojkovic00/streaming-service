@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 public class VideoProgress {
 
+
     @Id
     private String id;
     private Integer userId;
@@ -25,4 +26,5 @@ public class VideoProgress {
         this.userId = userId;
         this.videoId = videoId;
     }
+
 }
