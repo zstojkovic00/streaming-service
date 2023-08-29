@@ -4,20 +4,19 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.bson.types.Binary;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(value = "badge")
+import java.util.List;
+
+@Document(value = "user_badges")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Data
-public class Badge {
+public class UserBadges {
     @Id
-    private String id;
-    private String name;
-    private String description;
-    private boolean earned = false;
-    private Binary image;
+    String id;
+    String userId;
+    List<Badge> badges;
 }

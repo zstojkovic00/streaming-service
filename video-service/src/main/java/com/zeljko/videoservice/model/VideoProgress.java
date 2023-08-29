@@ -21,6 +21,7 @@ public class VideoProgress {
     private String videoId;
     private double progress;
     private boolean isMovieWatched;
+    private String genre;
 
     public VideoProgress(Integer userId, String videoId) {
         this.userId = userId;

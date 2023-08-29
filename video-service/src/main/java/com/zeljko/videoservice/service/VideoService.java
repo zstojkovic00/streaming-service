@@ -60,7 +60,7 @@ public class VideoService {
             GridFSFile file = gridFsTemplate.findOne(new Query(Criteria.where("_id").is(id)));
 
             if (file == null) {
-                log.info("Video not found with id {}" ,id);
+                log.info("Video not found with id {}", id);
                 throw new NotFoundException("Video not found with id: " + id);
             }
 
@@ -68,6 +68,9 @@ public class VideoService {
             video.setId(file.getObjectId().toString());
             video.setTitle(file.getMetadata().get("title").toString());
             video.setStream(gridFsOperations.getResource(file).getInputStream());
+
+            video.setMetaData(file.getMetadata());
+
             return video;
         } catch (Exception e) {
             log.error("An error occurred while retrieving the video with id {}", id, e);
@@ -114,21 +117,30 @@ public class VideoService {
     }
 
     public void updateVideoProgress(Integer userId, String videoId, double progress, boolean isMovieWatched) {
-        log.debug("Updating video progress for userId: {}, videoId: {}, progress: {}, is movie watched: {}", userId, videoId, progress, isMovieWatched);
 
         VideoProgress videoProgress = videoProgressRepository.findByUserIdAndVideoId(userId, videoId)
                 .orElseGet(() -> new VideoProgress(userId, videoId));
 
+        GridFSFile file = gridFsTemplate.findOne(new Query(Criteria.where("_id").is(videoId)));
+
         videoProgress.setProgress(progress);
         videoProgress.setMovieWatched(isMovieWatched);
+        if(file != null) {
+            assert file.getMetadata() != null;
+                String genre = file.getMetadata().get("genre").toString();
+                videoProgress.setGenre(genre);
+
+        }
 
         videoProgressRepository.save(videoProgress);
 
-        kafkaTemplate.send("video-progress",new VideoProgressMessage
+        kafkaTemplate.send("video-progress", new VideoProgressMessage
                 (videoProgress.getUserId(),
                         videoProgress.getVideoId(),
                         videoProgress.getProgress(),
-                        videoProgress.isMovieWatched()));
+                        videoProgress.isMovieWatched(),
+                        videoProgress.getGenre()
+                ));
     }
 
 }

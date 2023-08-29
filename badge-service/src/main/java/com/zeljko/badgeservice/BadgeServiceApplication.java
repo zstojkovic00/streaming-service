@@ -16,9 +16,6 @@ public class BadgeServiceApplication {
 		SpringApplication.run(BadgeServiceApplication.class, args);
 	}
 
-	@KafkaListener(topics = "video-progress")
-	public void processVideoProgress(VideoProgressMessage progressMessage) {
-		log.info("Received Notification for Video - user id: {}, video id: {}, progress: {}, isMovieWatched: {}", progressMessage.getUserId(), progressMessage.getVideoId(), progressMessage.getProgress(), progressMessage.getIsMovieWatched());
-	}
+
 
 }

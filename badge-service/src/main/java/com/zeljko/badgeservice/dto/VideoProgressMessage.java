@@ -14,4 +14,5 @@ public class VideoProgressMessage {
     private String videoId;
     private Double progress;
     private Boolean isMovieWatched;
+    private String genre;
 }

@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.InputStream;
+import java.util.Map;
 
 @Document(value = "video")
 @AllArgsConstructor
@@ -21,5 +22,6 @@ public class Video {
     private String id;
     private String title;
     private InputStream stream;
+    private Map<String, Object> metaData;
 
 }
