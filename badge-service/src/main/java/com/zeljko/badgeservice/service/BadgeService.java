@@ -24,6 +24,7 @@ public class BadgeService {
 
     private final BadgeRepository badgeRepository;
     private final UserBadgesRepository userBadgesRepository;
+    private final BadgeNotificationService badgeNotificationService;
 
 
     @KafkaListener(topics = "video-progress")
@@ -52,6 +53,7 @@ public class BadgeService {
         if(!badges.getBadges().contains(badge)){
             badges.getBadges().add(badge);
             userBadgesRepository.save(badges);
+            badgeNotificationService.sendBadgeNotification(userId, "Uspesno ste dobili " + badge.getName());
         }
     }
 

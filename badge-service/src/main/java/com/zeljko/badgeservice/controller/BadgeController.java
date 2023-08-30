@@ -1,7 +1,6 @@
 package com.zeljko.badgeservice.controller;
 
 import com.zeljko.badgeservice.model.Badge;
-import com.zeljko.badgeservice.repository.BadgeRepository;
 import com.zeljko.badgeservice.service.BadgeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,8 +16,6 @@ import java.io.IOException;
 public class BadgeController {
 
     private final BadgeService badgeService;
-    private final BadgeRepository badgeRepository;
-
 
     @PostMapping
     public ResponseEntity<Badge> createBadge(

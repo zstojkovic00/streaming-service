@@ -6,17 +6,35 @@ import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import Stomp from "stompjs";
 
 const Navbar = () => {
 
     const navigate = useNavigate();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [notificationCount, setNotificationCount] = useState(0);
 
     useEffect(() => {
         const token = localStorage.getItem('USER_KEY')
 
         if(token){
             setIsLoggedIn(true);
+            const socket = new WebSocket('ws://localhost:8082/ws');
+            const stompClient = Stomp.over(socket);
+
+            stompClient.connect({}, () => {
+                console.log('Connected to WebSocket');
+
+                stompClient.subscribe('/user/queue/badge-notifications', (message) => {
+                    const body = JSON.parse(message.body);
+                    console.log('Received badge notification:', body);
+
+                });
+            }, (error) => {
+                console.error('WebSocket connection error:', error);
+            });
+
+
         }
     }, []);
 
@@ -75,6 +93,7 @@ const Navbar = () => {
                         <div className="right">
                             <SearchIcon className="icon"/>
                             <NotificationsIcon className="icon"/>
+                            <span className="notification-count">{notificationCount}</span>
                             <AccountCircleIcon className="icon"/>
 
                             <div className="profile">
