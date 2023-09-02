@@ -1,7 +1,6 @@
 package com.zeljko.videoservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zeljko.videoservice.dto.VideoRequest;
 import com.zeljko.videoservice.repository.VideoRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
