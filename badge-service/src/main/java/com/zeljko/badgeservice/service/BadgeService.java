@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.bson.BsonBinarySubType;
 import org.bson.types.Binary;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,7 +25,6 @@ public class BadgeService {
 
     private final BadgeRepository badgeRepository;
     private final UserBadgesRepository userBadgesRepository;
-    private final BadgeNotificationService badgeNotificationService;
 
 
     @KafkaListener(topics = "video-progress")
@@ -42,21 +42,23 @@ public class BadgeService {
         }
     }
 
-    public void activateBadgeForUser(String userId, String badgeName){
+    public void activateBadgeForUser(String userId, String badgeName) {
         Badge badge = badgeRepository.findByName(badgeName)
                 .orElseThrow(() -> new BadgeNotFoundException("Badge with name " + badgeName + " not found"));
 
+        try {
+            UserBadges badges = userBadgesRepository.findById(userId)
+                    .orElseGet(() -> UserBadges.builder().userId(userId).badges(new ArrayList<>()).build());
 
-        UserBadges badges = userBadgesRepository.findById(userId)
-                .orElseGet(() -> UserBadges.builder().userId(userId).badges(new ArrayList<>()).build());
-
-        if(!badges.getBadges().contains(badge)){
-            badges.getBadges().add(badge);
-            userBadgesRepository.save(badges);
-            badgeNotificationService.sendBadgeNotification(userId, "Uspesno ste dobili " + badge.getName());
+            if (!badges.getBadges().contains(badge)) {
+                badges.getBadges().add(badge);
+                userBadgesRepository.save(badges);
+                log.info("Bedz aktiviran");
+            }
+        } catch (Exception e) {
+            log.error("Error activating badge for user: " + e.getMessage(), e);
         }
     }
-
 
     public Badge createBadge(MultipartFile file, String name, String description, boolean earned) throws IOException {
         Badge badge = new Badge();

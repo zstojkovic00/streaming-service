@@ -6,7 +6,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import Stomp from "stompjs";
+
 
 const Navbar = () => {
 
@@ -17,24 +17,8 @@ const Navbar = () => {
     useEffect(() => {
         const token = localStorage.getItem('USER_KEY')
 
-        if(token){
+        if (token) {
             setIsLoggedIn(true);
-            const socket = new WebSocket('ws://localhost:8082/ws');
-            const stompClient = Stomp.over(socket);
-
-            stompClient.connect({}, () => {
-                console.log('Connected to WebSocket');
-
-                stompClient.subscribe('/user/queue/badge-notifications', (message) => {
-                    const body = JSON.parse(message.body);
-                    console.log('Received badge notification:', body);
-
-                });
-            }, (error) => {
-                console.error('WebSocket connection error:', error);
-            });
-
-
         }
     }, []);
 
