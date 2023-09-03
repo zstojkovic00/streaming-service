@@ -2,11 +2,13 @@ package com.zeljko.videoservice.service;
 
 import com.zeljko.videoservice.dto.VideoMetadata;
 import com.zeljko.videoservice.dto.VideoMetadataRequest;
+import com.zeljko.videoservice.model.StreamBytesInfo;
 import com.zeljko.videoservice.model.Video;
 import com.zeljko.videoservice.repository.VideoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpRange;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,24 +78,22 @@ public class VideoService {
     }
 
 
-    public Optional<InputStream> getPreviewInputStream(String id) {
+    public Optional<InputStream> getVideoThumbnail(String id) {
         return videoRepository.findById(id)
-                .flatMap(
-                        vm -> {
-                            Path previewPicturePath = Path.of(dataFolder, vm.getId(), removeFileExt(vm.getFileName() + ".jpeg"));
-                            if (!Files.exists(previewPicturePath)) {
-                                return Optional.empty();
-                            }
-                            try {
-
-                                return Optional.of(Files.newInputStream(previewPicturePath));
-
-                            } catch (IOException e) {
-                                log.error("", e);
-                                throw new IllegalStateException();
-                            }
-                        }
-                );
+                .flatMap(vmd -> {
+                    Path previewPicturePath = Path.of(dataFolder,
+                            vmd.getId().toString(),
+                            removeFileExt(vmd.getFileName()) + ".jpeg");
+                    if (!Files.exists(previewPicturePath)) {
+                        return Optional.empty();
+                    }
+                    try {
+                        return Optional.of(Files.newInputStream(previewPicturePath));
+                    } catch (IOException ex) {
+                        log.error("", ex);
+                        return Optional.empty();
+                    }
+                });
     }
 
 
@@ -106,6 +106,47 @@ public class VideoService {
         videoMetadata.setStreamUrl("/api/v1/video/stream/" + v.getId());
 
         return videoMetadata;
+    }
+
+
+    public Optional<StreamBytesInfo> getStreamBytes(String id, HttpRange range) {
+        Optional<Video> byId = videoRepository.findById(id);
+        if (byId.isEmpty()) {
+            return Optional.empty();
+        }
+        Path filePath = Path.of(dataFolder, id, byId.get().getFileName());
+        if (!Files.exists(filePath)) {
+            log.error("File {} not found", filePath);
+            return Optional.empty();
+        }
+        try {
+            long fileSize = Files.size(filePath);
+            long chunkSize = fileSize / 100;
+            if (range == null) {
+                return Optional.of(new StreamBytesInfo(
+                        out -> Files.newInputStream(filePath).transferTo(out),
+                        fileSize, 0, fileSize, byId.get().getContentType()));
+            }
+
+            long rangeStart = range.getRangeStart(0);
+            long rangeEnd = rangeStart + chunkSize; // range.getRangeEnd(fileSize);
+            if (rangeEnd >= fileSize) {
+                rangeEnd = fileSize - 1;
+            }
+            long finalRangeEnd = rangeEnd;
+            return Optional.of(new StreamBytesInfo(
+                    out -> {
+                        try (InputStream inputStream = Files.newInputStream(filePath)) {
+                            inputStream.skip(rangeStart);
+                            byte[] bytes = inputStream.readNBytes((int) ((finalRangeEnd - rangeStart) + 1));
+                            out.write(bytes);
+                        }
+                    },
+                    fileSize, rangeStart, rangeEnd, byId.get().getContentType()));
+        } catch (IOException ex) {
+            log.error("", ex);
+            return Optional.empty();
+        }
     }
 
 

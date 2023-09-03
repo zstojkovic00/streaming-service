@@ -24,7 +24,7 @@ public class FrameGrabberService {
                 for (int i = 0; i < 50; i++) {
                     image = converter.convert(g.grabKeyFrame());
                     if (image != null) {
-                        File file = Path.of( removeFileExt(filePath.toString()) + ".jpeg").toFile();
+                        File file = Path.of(removeFileExt(filePath.toString()) + ".jpeg").toFile();
                         ImageIO.write(image, "jpeg", file);
                         break;
                     }
