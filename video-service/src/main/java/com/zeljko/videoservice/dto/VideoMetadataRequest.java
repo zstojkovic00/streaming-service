@@ -11,5 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class VideoMetadataRequest {
 
     private String description;
+    private String genre;
     private MultipartFile file;
 }

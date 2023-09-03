@@ -1,4 +1,4 @@
-package com.zeljko.videoservice.Utils;
+package com.zeljko.videoservice.utils;
 
 public class Utils {
     public static String removeFileExt(String fileName) {

@@ -14,6 +14,16 @@ export const getAllVideos = () => {
     });
 }
 
+export const getVideoById = (videoId) => {
+    return axios({
+        method: 'GET',
+        url: `http://localhost:8080/api/v1/video/${videoId}`,
+        headers:{
+            'Authorization':'Bearer '+getToken()
+        }
+    });
+}
+
 export const getStreamVideo = (videoId) => {
     return axios({
         method: 'GET',
@@ -21,13 +31,13 @@ export const getStreamVideo = (videoId) => {
     })
 }
 
-export const updateVideoProgress = (userId, videoId, progress, isMovieWatched) => {
+export const updateVideoProgress = (videoId, userId, progress, isMovieWatched,genre) => {
     return axios({
         method: 'PUT',
         url: `http://localhost:8080/api/v1/video/progress`,
         data: {
-            userId: userId,
             videoId: videoId,
+            userId: userId,
             progress: progress,
             isMovieWatched: isMovieWatched
         },

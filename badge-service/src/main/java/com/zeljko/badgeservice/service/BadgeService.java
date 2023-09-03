@@ -29,15 +29,15 @@ public class BadgeService {
 
     @KafkaListener(topics = "video-progress")
     public void processVideoProgress(VideoProgressMessage progressMessage) {
-        log.info("Received Notification for Video - user id: {}, video id: {}, progress: {}, isMovieWatched: {}, genre: {}",
-                progressMessage.getUserId()
-                ,progressMessage.getVideoId()
+        log.debug("video id: {}, user id: {}, progress: {}, isMovieWatched: {}, genre: {}",
+                progressMessage.getVideoId()
+                ,progressMessage.getUserId()
                 ,progressMessage.getProgress()
                 ,progressMessage.getIsMovieWatched()
                 ,progressMessage.getGenre()
         );
 
-        if ("Marvel".equals(progressMessage.getGenre()) && progressMessage.getIsMovieWatched()) {
+        if ("Game".equals(progressMessage.getGenre()) && progressMessage.getIsMovieWatched()) {
             activateBadgeForUser(String.valueOf(progressMessage.getUserId()), "Marvel Badge");
         }
     }

@@ -1,17 +1,16 @@
-package com.zeljko.badgeservice.dto;
+package com.zeljko.videoservice.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class VideoProgressMessage {
-    private String videoId;
+
     private String userId;
+    private String videoId;
     private Double progress;
     private Boolean isMovieWatched;
     private String genre;
