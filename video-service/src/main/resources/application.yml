@@ -22,6 +22,8 @@ spring:
 server:
   port: 8081
 
+
+
 eureka:
   client:
     serviceUrl:
@@ -34,3 +36,6 @@ logging:
         videoservice:
           service:
             VideoService: DEBUG
+
+data:
+  folder: /home/zstojkovic00/IdeaProjects/yettel-tv/video-service/data

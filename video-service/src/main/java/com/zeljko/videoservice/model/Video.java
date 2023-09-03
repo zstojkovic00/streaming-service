@@ -20,8 +20,10 @@ public class Video {
 
     @Id
     private String id;
-    private String title;
-    private InputStream stream;
-    private Map<String, Object> metaData;
+    private String fileName;
+    private String contentType;
+    private String description;
+    private Long fileSize;
+    private Long videoLength;
 
 }

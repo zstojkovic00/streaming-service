@@ -1,7 +1,6 @@
 package com.zeljko.videoservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zeljko.videoservice.dto.VideoRequest;
 import com.zeljko.videoservice.repository.VideoRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -42,30 +41,4 @@ class VideoServiceApplicationTests {
 	static void setProperties(DynamicPropertyRegistry dynamicPropertyRegistry){
 		dynamicPropertyRegistry.add("spring.data.mongo.uri", mongoDBContainer::getReplicaSetUrl);
 	}
-
-
-	@Test
-	void shouldCreateVideo() throws Exception {
-		VideoRequest videoRequest = getVideoRequest();
-		String videoRequestString = objectMapper.writeValueAsString(videoRequest);
-
-		mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/video")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(videoRequestString)
-				)
-				.andExpect(status().isCreated());
-		Assertions.assertTrue(videoRepository.findAll().size() == 1);
-	}
-
-
-	private VideoRequest getVideoRequest() {
-		return VideoRequest.builder()
-				.name("Spiderman-2")
-				.description("Marvel movie")
-				.url("url-to-movie")
-				.category("marvel")
-				.build();
-	}
-
-
 }

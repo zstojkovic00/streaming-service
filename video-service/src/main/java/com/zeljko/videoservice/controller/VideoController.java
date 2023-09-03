@@ -1,73 +1,89 @@
 package com.zeljko.videoservice.controller;
 
 
-import com.zeljko.videoservice.dto.UpdateProgressRequest;
-import com.zeljko.videoservice.model.Video;
+import com.zeljko.videoservice.dto.VideoMetadata;
+import com.zeljko.videoservice.dto.VideoMetadataRequest;
+import com.zeljko.videoservice.model.StreamBytesInfo;
 import com.zeljko.videoservice.service.VideoService;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpRange;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
-import java.io.IOException;
+import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/video")
 @RequiredArgsConstructor
+@Slf4j
 public class VideoController {
 
     private final VideoService videoService;
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<String> createVideo(@RequestParam("title") String title,
-                                              @RequestParam("description") String description,
-                                              @RequestParam("photoUrl") String photoUrl,
-                                              @RequestParam("duration") String duration,
-                                              @RequestParam("ageRestriction") Integer ageRestriction,
-                                              @RequestParam("genre") String genre,
-                                              @RequestParam("file") MultipartFile videoFile) throws IOException {
-        String response = videoService.addVideo(title, description, photoUrl, duration, ageRestriction, genre, videoFile);
-        return ResponseEntity.ok(response);
-    }
+    @GetMapping("/all")
+    public List<VideoMetadata> findAll() {
 
-    @GetMapping
-    public ResponseEntity<List<Video>> getAllVideo() {
-        List<Video> videos = videoService.getAllVideo();
-        return ResponseEntity.ok(videos);
+        return videoService.findAllVideoMetadata();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getVideo(@PathVariable String id, Model model) {
-        Video video = videoService.getVideo(id);
-        model.addAttribute("title", video.getTitle());
-        model.addAttribute("url", "/videos/stream/" + id);
-        return ResponseEntity.ok(video);
+    public VideoMetadata findById(@PathVariable("id") String id) {
+
+        return videoService.findById(id).orElseThrow(NotFoundException::new);
     }
+
+    @GetMapping(value = "/preview/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<StreamingResponseBody> getPreviewPicture(@PathVariable("id") String id) {
+        InputStream inputStream = videoService.getVideoThumbnail(id)
+                .orElseThrow(NotFoundException::new);
+        return ResponseEntity.ok(inputStream::transferTo);
+    }
+
 
     @GetMapping("/stream/{id}")
-    public void streamVideo(@PathVariable String id, HttpServletResponse response) throws Exception {
-        Video video = videoService.getVideo(id);
-        // copies the content of the video's input stream to the output stream of the http response
-        FileCopyUtils.copy(video.getStream(), response.getOutputStream());
+    public ResponseEntity<StreamingResponseBody> streamVideo(@RequestHeader(value = "Range", required = false) String httpRangeHeader,
+                                                             @PathVariable("id") String id) {
+        log.info("Requested range [{}] for file `{}`", httpRangeHeader, id);
+
+        List<HttpRange> httpRangeList = HttpRange.parseRanges(httpRangeHeader);
+        StreamBytesInfo streamBytesInfo = videoService.getStreamBytes(id, httpRangeList.size() > 0 ? httpRangeList.get(0) : null)
+                .orElseThrow(NotFoundException::new);
+
+        long byteLength = streamBytesInfo.getRangeEnd() - streamBytesInfo.getRangeStart() + 1;
+        ResponseEntity.BodyBuilder builder = ResponseEntity.status(httpRangeList.size() > 0 ? HttpStatus.PARTIAL_CONTENT : HttpStatus.OK)
+                .header("Content-Type", streamBytesInfo.getContentType())
+                .header("Accept-Ranges", "bytes")
+                .header("Content-Length", Long.toString(byteLength));
+
+        if (httpRangeList.size() > 0) {
+            builder.header("Content-Range",
+                    "bytes " + streamBytesInfo.getRangeStart() +
+                            "-" + streamBytesInfo.getRangeEnd() +
+                            "/" + streamBytesInfo.getFileSize());
+        }
+        log.info("Providing bytes from {} to {}. We are at {}% of overall video.",
+                streamBytesInfo.getRangeStart(), streamBytesInfo.getRangeEnd(),
+                new DecimalFormat("###.##").format(100.0 * streamBytesInfo.getRangeStart() / streamBytesInfo.getFileSize()));
+        return builder.body(streamBytesInfo.getResponseBody());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteVideo(@PathVariable String id) {
-        videoService.deleteVideo(id);
-        return ResponseEntity.ok("Video deleted successfully");
+    @PostMapping(path = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> uploadVideo(VideoMetadataRequest videoMetadataRequest) {
+        try {
+          videoService.saveNewVideo(videoMetadataRequest);
 
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PutMapping("/progress")
-    public ResponseEntity<String> updateVideoProgress(@RequestBody UpdateProgressRequest request) {
-        videoService.updateVideoProgress(request.getUserId(), request.getVideoId(), request.getProgress(), request.getIsMovieWatched());
-        return ResponseEntity.ok("Video progress updated successfully");
-    }
 
 }
