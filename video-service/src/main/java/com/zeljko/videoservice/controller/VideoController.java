@@ -1,6 +1,7 @@
 package com.zeljko.videoservice.controller;
 
 
+import com.zeljko.videoservice.dto.UpdateProgressVideo;
 import com.zeljko.videoservice.dto.VideoMetadata;
 import com.zeljko.videoservice.dto.VideoMetadataRequest;
 import com.zeljko.videoservice.model.StreamBytesInfo;
@@ -50,7 +51,7 @@ public class VideoController {
     @GetMapping("/stream/{id}")
     public ResponseEntity<StreamingResponseBody> streamVideo(@RequestHeader(value = "Range", required = false) String httpRangeHeader,
                                                              @PathVariable("id") String id) {
-        log.info("Requested range [{}] for file `{}`", httpRangeHeader, id);
+//        log.info("Requested range [{}] for file `{}`", httpRangeHeader, id);
 
         List<HttpRange> httpRangeList = HttpRange.parseRanges(httpRangeHeader);
         StreamBytesInfo streamBytesInfo = videoService.getStreamBytes(id, httpRangeList.size() > 0 ? httpRangeList.get(0) : null)
@@ -68,16 +69,16 @@ public class VideoController {
                             "-" + streamBytesInfo.getRangeEnd() +
                             "/" + streamBytesInfo.getFileSize());
         }
-        log.info("Providing bytes from {} to {}. We are at {}% of overall video.",
-                streamBytesInfo.getRangeStart(), streamBytesInfo.getRangeEnd(),
-                new DecimalFormat("###.##").format(100.0 * streamBytesInfo.getRangeStart() / streamBytesInfo.getFileSize()));
+//        log.info("Providing bytes from {} to {}. We are at {}% of overall video.",
+//                streamBytesInfo.getRangeStart(), streamBytesInfo.getRangeEnd(),
+//                new DecimalFormat("###.##").format(100.0 * streamBytesInfo.getRangeStart() / streamBytesInfo.getFileSize()));
         return builder.body(streamBytesInfo.getResponseBody());
     }
 
     @PostMapping(path = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> uploadVideo(VideoMetadataRequest videoMetadataRequest) {
         try {
-          videoService.saveNewVideo(videoMetadataRequest);
+            videoService.saveNewVideo(videoMetadataRequest);
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -85,5 +86,15 @@ public class VideoController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @PutMapping("/progress")
+    public ResponseEntity<String> updateVideoProgress(@RequestBody UpdateProgressVideo request) {
+        videoService.updateVideoProgress(request.getVideoId(),
+                request.getUserId(),
+                request.getProgress(),
+                request.isMovieWatched(),
+                request.getGenre()
+        );
+        return ResponseEntity.ok("Video progress updated successfully");
+    }
 
 }

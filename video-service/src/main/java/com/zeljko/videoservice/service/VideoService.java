@@ -2,13 +2,17 @@ package com.zeljko.videoservice.service;
 
 import com.zeljko.videoservice.dto.VideoMetadata;
 import com.zeljko.videoservice.dto.VideoMetadataRequest;
+import com.zeljko.videoservice.dto.VideoProgressMessage;
 import com.zeljko.videoservice.model.StreamBytesInfo;
 import com.zeljko.videoservice.model.Video;
+import com.zeljko.videoservice.model.VideoProgress;
+import com.zeljko.videoservice.repository.VideoProgressRepository;
 import com.zeljko.videoservice.repository.VideoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpRange;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +25,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.zeljko.videoservice.Utils.Utils.removeFileExt;
+import static com.zeljko.videoservice.utils.Utils.removeFileExt;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.WRITE;
 
@@ -34,8 +38,9 @@ public class VideoService {
     private String dataFolder;
 
     private final VideoRepository videoRepository;
-
+    private final VideoProgressRepository videoProgressRepository;
     private final FrameGrabberService frameGrabberService;
+    private final KafkaTemplate<String, VideoProgressMessage> kafkaTemplate;
 
 
     public List<VideoMetadata> findAllVideoMetadata() {
@@ -57,6 +62,8 @@ public class VideoService {
         v.setContentType(videoMetadataRequest.getFile().getContentType());
         v.setFileSize(videoMetadataRequest.getFile().getSize());
         v.setDescription(videoMetadataRequest.getDescription());
+        v.setGenre(videoMetadataRequest.getGenre());
+
         videoRepository.save(v);
 
         Path directory = Path.of(dataFolder, v.getId());
@@ -104,6 +111,7 @@ public class VideoService {
         videoMetadata.setContentType(v.getContentType());
         videoMetadata.setPreviewUrl("/api/v1/video/preview/" + v.getId());
         videoMetadata.setStreamUrl("/api/v1/video/stream/" + v.getId());
+        videoMetadata.setGenre(v.getGenre());
 
         return videoMetadata;
     }
@@ -148,6 +156,36 @@ public class VideoService {
             return Optional.empty();
         }
     }
+
+    public void updateVideoProgress(String videoId, String userId, Double progress, boolean isMovieWatched, String genre) {
+        log.debug("Updating video progress for videoId: {}, userId: {}, progress: {}, is movie watched: {}, genre: {}", videoId, userId, progress, isMovieWatched, genre);
+
+        Optional<VideoProgress> existingProgress = videoProgressRepository.findByVideoIdAndUserId(videoId, userId);
+        VideoProgress videoProgress;
+
+        if (existingProgress.isPresent()) {
+            videoProgress = existingProgress.get();
+        } else {
+            videoProgress = new VideoProgress();
+            videoProgress.setVideoId(videoId);
+            videoProgress.setUserId(userId);
+        }
+
+        videoProgress.setProgress(progress);
+        videoProgress.setMovieWatched(isMovieWatched);
+        videoProgress.setGenre(genre);
+
+        videoProgressRepository.save(videoProgress);
+
+         kafkaTemplate.send("video-progress", new VideoProgressMessage(
+                 videoProgress.getVideoId(),
+                 videoProgress.getUserId(),
+                 videoProgress.getProgress(),
+                 videoProgress.isMovieWatched(),
+                 videoProgress.getGenre()
+         ));
+    }
+
 
 
 }

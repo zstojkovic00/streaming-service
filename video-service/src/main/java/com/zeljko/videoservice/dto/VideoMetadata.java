@@ -15,4 +15,5 @@ public class VideoMetadata {
     private String contentType;
     private String previewUrl;
     private String streamUrl;
+    private String genre;
 }

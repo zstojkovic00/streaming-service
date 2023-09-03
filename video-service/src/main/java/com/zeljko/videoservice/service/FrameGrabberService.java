@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static com.zeljko.videoservice.Utils.Utils.removeFileExt;
+import static com.zeljko.videoservice.utils.Utils.removeFileExt;
 
 
 @Service

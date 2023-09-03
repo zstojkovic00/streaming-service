@@ -21,6 +21,7 @@ public class Video {
     @Id
     private String id;
     private String fileName;
+    private String genre;
     private String contentType;
     private String description;
     private Long fileSize;
