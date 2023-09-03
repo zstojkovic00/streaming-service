@@ -7,7 +7,7 @@ export const getToken=()=>{
 export const getAllVideos = () => {
     return axios({
         method: 'GET',
-        url: "http://localhost:8080/api/v1/video",
+        url: "http://localhost:8080/api/v1/video/all",
         headers:{
             'Authorization':'Bearer '+getToken()
         }

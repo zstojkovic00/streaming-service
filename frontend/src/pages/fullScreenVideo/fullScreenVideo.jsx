@@ -69,7 +69,7 @@ const FullScreenVideo = () => {
                 autoPlay
                 controls
                 ref={videoRef}
-                onTimeUpdate={handleTimeUpdate}
+                // onTimeUpdate={handleTimeUpdate}
                 src={`http://localhost:8080/api/v1/video/stream/${videoId}`}
             />
         </div>

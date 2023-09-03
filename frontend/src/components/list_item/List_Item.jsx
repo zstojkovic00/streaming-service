@@ -17,10 +17,10 @@ const ListItem = ({ video }) => {
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            <img src={`${video.stream.gridFSFile.metadata?.photoUrl}`} alt="spiderman" />
+            <img src={`http://localhost:8080/api/v1/video/preview/${video.id}`} alt="spiderman" />
             {isHovered && (
                 <>
-                    <video src={`http://localhost:8081/api/v1/video/stream/${video.id}`} autoPlay={true} loop />
+                    <video src={`http://localhost:8080/api/v1/video/stream/${video.id}`} autoPlay={true} loop />
                     <div className="itemInfo">
                         <div className="icons">
                             <Link to={`video/${video.title}/${video.id}`}>
@@ -32,14 +32,14 @@ const ListItem = ({ video }) => {
                         </div>
 
                         <div className="itemInfoTop">
-                            <span>{video.stream.gridFSFile.metadata?.duration}</span>
-                            <span className="limit">+{video.stream.gridFSFile.metadata?.ageRestriction}</span>
+                            <span></span>
+                            <span className="limit">+</span>
                             <span>1999</span>
                         </div>
                         <div className="desc">
-                            {video.title}
+                            {video.description}
                         </div>
-                        <div className="genre">{video.stream.gridFSFile.metadata?.description}</div>
+                        <div className="genre"></div>
                     </div>
                 </>
             )}
