@@ -14,12 +14,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class VideoProgress {
 
     @Id
-    String id;
-    String videoId;
-    String userId;
-    Double progress;
-    boolean isMovieWatched;
-    String genre;
+    private String id;
+    private String videoId;
+    private String userId;
+    private Double progress;
+    private boolean watched;
+    private String genre;
 
     public VideoProgress(String videoId, String userId) {
     }

@@ -12,7 +12,7 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       group-id: badge-service-group
     properties:
-      "[spring.json.type.mapping]": event:com.zeljko.badgeservice.dto.VideoProgressMessage
+      "[spring.json.type.mapping]": dto:com.zeljko.badgeservice.dto.VideoProgressMessage
       spring.json.trusted.packages: "*"
 
     template:

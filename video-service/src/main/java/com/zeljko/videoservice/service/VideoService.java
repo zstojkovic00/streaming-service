@@ -157,8 +157,14 @@ public class VideoService {
         }
     }
 
-    public void updateVideoProgress(String videoId, String userId, Double progress, boolean isMovieWatched, String genre) {
-        log.debug("Updating video progress for videoId: {}, userId: {}, progress: {}, is movie watched: {}, genre: {}", videoId, userId, progress, isMovieWatched, genre);
+    public void updateVideoProgress(String videoId, String userId, Double progress, boolean watched, String genre) {
+        log.debug("Updating video progress for videoId: {}, userId: {}, progress: {}, is movie watched: {}, genre: {}", videoId, userId, progress, watched, genre);
+
+
+        if (userId == null || userId.isEmpty()) {
+            log.info("userId is null or empty, exiting updateVideoProgress");
+            return;
+        }
 
         Optional<VideoProgress> existingProgress = videoProgressRepository.findByVideoIdAndUserId(videoId, userId);
         VideoProgress videoProgress;
@@ -172,7 +178,7 @@ public class VideoService {
         }
 
         videoProgress.setProgress(progress);
-        videoProgress.setMovieWatched(isMovieWatched);
+        videoProgress.setWatched(watched);
         videoProgress.setGenre(genre);
 
         videoProgressRepository.save(videoProgress);
@@ -181,7 +187,7 @@ public class VideoService {
                  videoProgress.getVideoId(),
                  videoProgress.getUserId(),
                  videoProgress.getProgress(),
-                 videoProgress.isMovieWatched(),
+                 videoProgress.isWatched(),
                  videoProgress.getGenre()
          ));
     }

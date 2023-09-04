@@ -9,9 +9,9 @@ import lombok.*;
 @NoArgsConstructor
 public class UpdateProgressVideo {
 
-    String videoId;
-    String userId;
-    Double progress;
-    boolean isMovieWatched;
-    String genre;
+    private String videoId;
+    private String userId;
+    private Double progress;
+    private boolean watched;
+    private String genre;
 }

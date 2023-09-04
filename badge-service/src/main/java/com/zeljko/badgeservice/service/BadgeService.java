@@ -29,16 +29,16 @@ public class BadgeService {
 
     @KafkaListener(topics = "video-progress")
     public void processVideoProgress(VideoProgressMessage progressMessage) {
-        log.debug("video id: {}, user id: {}, progress: {}, isMovieWatched: {}, genre: {}",
+        log.info("user id: {}, video id: {}, progress: {}, isMovieWatched: {}, genre: {}",
                 progressMessage.getVideoId()
                 ,progressMessage.getUserId()
                 ,progressMessage.getProgress()
-                ,progressMessage.getIsMovieWatched()
+                ,progressMessage.isMovieWatched()
                 ,progressMessage.getGenre()
         );
 
-        if ("Game".equals(progressMessage.getGenre()) && progressMessage.getIsMovieWatched()) {
-            activateBadgeForUser(String.valueOf(progressMessage.getUserId()), "Marvel Badge");
+        if ("Marvel".equals(progressMessage.getGenre()) && progressMessage.isMovieWatched()) {
+            activateBadgeForUser(progressMessage.getUserId(), "Marvel Badge");
         }
     }
 

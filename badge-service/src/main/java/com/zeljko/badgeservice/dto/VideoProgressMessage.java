@@ -10,9 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class VideoProgressMessage {
+
     private String videoId;
     private String userId;
     private Double progress;
-    private Boolean isMovieWatched;
+    private boolean isMovieWatched;
     private String genre;
 }

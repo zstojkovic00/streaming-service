@@ -20,10 +20,12 @@ const FullScreenVideo = () => {
 
 
     useEffect(() => {
-
         getVideoById(videoId).then((response) => {
-            console.log(response);
-            setGenre(response.data.genre);
+            if (response.data.genre) {
+                setGenre(response.data.genre);
+            } else {
+                setGenre("Default");
+            }
         }).catch((err) => {
             console.log(err)
         })
@@ -38,33 +40,33 @@ const FullScreenVideo = () => {
     }, []);
 
 
+
+
     const handleTimeUpdate = () => {
-        if (token) {
-            const currentTime = videoRef.current.currentTime;
-            const duration = videoRef.current.duration;
+        const currentTime = videoRef.current.currentTime;
+        const duration = videoRef.current.duration;
 
-            const progress = (currentTime / duration) * 100;
+        const progress = (currentTime / duration) * 100;
 
-            let isMovieWatched = false;
+        let watched = false;
 
-            if (progress > 75) {
-                isMovieWatched = true;
-            }
-            if (lastProgressSent === null || progress - lastProgressSent >= 5) {
-                if (progress < 80) {
-                    updateVideoProgress(videoId, userId, progress, isMovieWatched, genre)
-                        .then(response => {
-                            console.log(response.data);
-                            console.log("Video progress updated successfully");
-                            setLastProgressSent(progress);
-                        })
-                        .catch(error => {
-                            console.error("Error updating video progress", error);
-                        });
-                }
+        if (progress > 75) {
+            watched = true;
+        }
+        if (lastProgressSent === null || progress - lastProgressSent >= 5) {
+            if (progress < 99 && userId) {
+                updateVideoProgress(videoId, userId, progress, watched, genre)
+                    .then(() => {
+                        console.log("Video progress updated successfully");
+                        setLastProgressSent(progress);
+                    })
+                    .catch(error => {
+                        console.error("Error updating video progress", error);
+                    });
             }
         }
-    };
+    }
+
 
 
     return (
