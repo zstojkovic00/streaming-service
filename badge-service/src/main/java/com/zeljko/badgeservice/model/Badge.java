@@ -18,6 +18,5 @@ public class Badge {
     private String id;
     private String name;
     private String description;
-    private boolean earned = false;
     private Binary image;
 }

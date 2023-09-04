@@ -22,13 +22,12 @@ const Navbar = () => {
         }
     }, []);
 
-    const logout =() => {
+
+    const logout = () => {
         localStorage.clear();
         setIsLoggedIn(false);
         navigate('/');
     }
-
-
 
     return (
         <div>
@@ -37,8 +36,9 @@ const Navbar = () => {
                 <div className="navbar">
                     <div className="container">
                         <div className="left">
-
+                            <Link to={"/"}>
                             <img src={Yettel} alt="yettel"/>
+                            </Link>
                             <span>Today</span>
                             <span>Shows</span>
                             <span>Series</span>
@@ -46,6 +46,7 @@ const Navbar = () => {
                             <span>Sports</span>
                             <span>Kids</span>
                             <span>Channels</span>
+
 
                         </div>
 
@@ -63,7 +64,9 @@ const Navbar = () => {
                     <div className="container">
                         <div className="left">
 
-                            <img src={Yettel} alt="yettel"/>
+                            <Link to={"/"}>
+                                <img src={Yettel} alt="yettel"/>
+                            </Link>
                             <span>Today</span>
                             <span>Shows</span>
                             <span>Series</span>
@@ -71,7 +74,9 @@ const Navbar = () => {
                             <span>Sports</span>
                             <span>Kids</span>
                             <span>Channels</span>
-
+                            <Link to={"/badges"} className="badges">
+                            <span>Badges</span>
+                            </Link>
                         </div>
 
                         <div className="right">
@@ -92,9 +97,7 @@ const Navbar = () => {
                     </div>
                 </div>
 
-                )}
-
-
+            )}
 
 
         </div>

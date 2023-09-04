@@ -1,9 +1,14 @@
 package com.zeljko.securityservice.controller;
 
+import com.zeljko.securityservice.dto.UserDTO;
 import com.zeljko.securityservice.model.UserCredential;
 import com.zeljko.securityservice.service.UserService;
+import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,8 +28,8 @@ public class UserController {
     }
 
     @GetMapping("/current")
-    public UserCredential getCurrentUser(Principal principal) {
-        return userService.getCurrentUserInfo(principal);
+    public UserDTO getCurrentUser(Principal principal) {
+        return userService.getCurrentUserInfo(principal).orElseThrow(NotFoundException::new);
     }
 
 }

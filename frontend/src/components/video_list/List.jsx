@@ -1,6 +1,6 @@
 import React, {useRef, useState, useEffect} from 'react';
 import "./List.scss"
-import ListItem from "../list_item/List_Item"
+import ListItem from "../video_list_item/List_Item"
 import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
 import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
 import {getAllVideos} from "../../services/videoService";

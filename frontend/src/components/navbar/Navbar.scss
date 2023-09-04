@@ -28,6 +28,13 @@
         cursor: pointer;
         color: #f5f5f5;
       }
+      span:hover{
+        color: var(--green);
+        text-decoration: none;
+      }
+    .badges{
+      text-decoration: none;
+      }
 
     }
     .right {
