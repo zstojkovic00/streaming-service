@@ -36,6 +36,7 @@ public class BadgeService {
     private final BadgeRepository badgeRepository;
     private final UserBadgesRepository userBadgesRepository;
     private final RestTemplate restTemplate;
+    private final NotificationService notificationService;
 
 
 
@@ -64,13 +65,17 @@ public class BadgeService {
                     .orElseGet(() -> UserBadges.builder().userId(userId).badges(new ArrayList<>()).build());
 
 
-            if (!badges.getBadges().contains(badge)) {
+//            if (!badges.getBadges().contains(badge))
+            {
                 badges.getBadges().add(badge);
                 userBadgesRepository.save(badges);
+
                 log.info("Bedz aktiviran");
-            } else {
-                log.info("Korisnik već ima ovaj bedž");
+                notificationService.sendNotification(userId, "Badge is activated" + badgeName);
             }
+//            else {
+//                log.info("Korisnik već ima ovaj bedž");
+//            }
         } catch (Exception e) {
             log.error("Error activating badge for user: " + e.getMessage(), e);
         }

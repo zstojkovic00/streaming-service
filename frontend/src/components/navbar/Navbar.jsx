@@ -6,6 +6,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import NotificationComponent from "../notification/NotificationComponent";
 
 
 const Navbar = () => {
@@ -82,7 +83,6 @@ const Navbar = () => {
                         <div className="right">
                             <SearchIcon className="icon"/>
                             <NotificationsIcon className="icon"/>
-                            <span className="notification-count">{notificationCount}</span>
                             <AccountCircleIcon className="icon"/>
 
                             <div className="profile">
@@ -94,7 +94,10 @@ const Navbar = () => {
 
                             </div>
                         </div>
+
                     </div>
+                    <NotificationComponent />
+
                 </div>
 
             )}

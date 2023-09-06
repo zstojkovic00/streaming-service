@@ -22,10 +22,6 @@ const BadgeList = () => {
                     <div className="badge-image">
                         <img src={`data:image/png;base64,${badge.image.data}`} alt={badge.name} />
                     </div>
-                    <div className="badge-info">
-                        <h3>{badge.name}</h3>
-                        <p>{badge.description}</p>
-                    </div>
                 </div>
             ))}
         </div>
