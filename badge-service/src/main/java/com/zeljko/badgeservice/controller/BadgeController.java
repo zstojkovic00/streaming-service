@@ -20,22 +20,26 @@ public class BadgeController {
 
     private final BadgeService badgeService;
 
-
-    @PostMapping
-    public ResponseEntity<Badge> createBadge(
+    @PostMapping("/upload")
+    public ResponseEntity<Void> createBadge(
             @RequestParam("file") MultipartFile file,
             @RequestParam("name") String name,
-            @RequestParam("description") String description
-    ) throws IOException {
+            @RequestParam("description") String description) {
+        try {
+            badgeService.createBadge(file, name, description);
 
-        Badge badge = badgeService.createBadge(file, name, description);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(badge);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @GetMapping("/current-user")
-    public ResponseEntity<Optional<UserBadges>> getBadgesForCurrentUser(){
 
-        return badgeService.getBadgesForCurrentUser();
+    @GetMapping("/current-user")
+    public ResponseEntity<Optional<UserBadges>> getBadgesForCurrentUser(@RequestHeader("Authorization") String bearerToken) {
+        Optional<UserBadges> userBadges = badgeService.getBadgesForCurrentUser(bearerToken).getBody();
+
+        return ResponseEntity.ok().body(userBadges);
+
     }
 }

@@ -1,24 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import {getBadgesByUserId} from "../../services/badgeService";
-import {getCurrentUser} from "../../services/authenticationService";
+import { getBadgesForCurrentUser } from "../../services/badgeService";
+import "./BadgeList.scss"
 
 const BadgeList = () => {
-
     const [badges, setBadges] = useState([]);
 
-
-    useEffect(()=>{
-
-        getBadgesByUserId().then((response)=>{
-            setBadges(response.data);
-        }).catch((err)=>{
-            console.log(err);
-        })
-    },[])
+    useEffect(() => {
+        getBadgesForCurrentUser()
+            .then((response) => {
+                setBadges(response.data.badges);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }, []);
 
     return (
-        <div>
-
+        <div className="badge-container">
+            {badges.map((badge) => (
+                <div key={badge.id} className="badge">
+                    <div className="badge-image">
+                        <img src={`data:image/png;base64,${badge.image.data}`} alt={badge.name} />
+                    </div>
+                    <div className="badge-info">
+                        <h3>{badge.name}</h3>
+                        <p>{badge.description}</p>
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };

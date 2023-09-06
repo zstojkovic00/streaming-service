@@ -27,5 +27,8 @@ eureka:
       defaultZone: http://localhost:8761/eureka
 
 
+data:
+  folder: /home/zstojkovic00/IdeaProjects/yettel-tv/badge-service/data
+
 
 

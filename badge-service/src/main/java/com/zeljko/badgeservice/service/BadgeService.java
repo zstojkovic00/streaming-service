@@ -11,13 +11,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.BsonBinarySubType;
 import org.bson.types.Binary;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -26,9 +30,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BadgeService {
 
+    @Value("${data.folder}")
+    private String dataFolder;
+
     private final BadgeRepository badgeRepository;
     private final UserBadgesRepository userBadgesRepository;
     private final RestTemplate restTemplate;
+
 
 
 
@@ -67,21 +75,35 @@ public class BadgeService {
             log.error("Error activating badge for user: " + e.getMessage(), e);
         }
     }
-
-    public Badge createBadge(MultipartFile file, String name, String description) throws IOException {
+    @Transactional
+    public void createBadge(MultipartFile file, String name, String description) throws IOException {
         Badge badge = new Badge();
         badge.setName(name);
         badge.setDescription(description);
         badge.setImage(new Binary(BsonBinarySubType.BINARY, file.getBytes()));
-       return badgeRepository.insert(badge);
+        Badge savedBadge = badgeRepository.insert(badge);
+
+        String badgeId = savedBadge.getId();
+
+        String fileName = badgeId + "_" + file.getOriginalFilename();
+        Path filePath = Path.of(dataFolder, fileName);
+        Files.write(filePath, file.getBytes());
     }
 
 
-    public ResponseEntity<Optional<UserBadges>> getBadgesForCurrentUser() {
+    public ResponseEntity<Optional<UserBadges>> getBadgesForCurrentUser(String bearerToken) {
+
+
+        HttpHeaders headers = new HttpHeaders();
+        bearerToken = bearerToken.substring(7);
+        headers.setBearerAuth(bearerToken);
+
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
         ResponseEntity<UserDTO> response = restTemplate.exchange(
                 "http://localhost:8080/user/current",
                 HttpMethod.GET,
-                null,
+                entity,
                 UserDTO.class
         );
         if(response.getStatusCode() == HttpStatus.OK){
@@ -89,7 +111,7 @@ public class BadgeService {
 
             int userId = userDTO.getId();
 
-            Optional<UserBadges> badges = userBadgesRepository.findById(String.valueOf(userId));
+            Optional<UserBadges> badges = userBadgesRepository.findByUserId(String.valueOf(userId));
 
             return ResponseEntity.ok(badges);
         } else {
