@@ -26,6 +26,9 @@
     "stompjs": "^2.3.3",
     "websocket": "^1.0.34"
   },
+  "devDependencies": {
+    "react-scripts": "5.0.1"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
