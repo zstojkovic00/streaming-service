@@ -1,1 +1,6 @@
-/home/zstojkovic00/IdeaProjects/yettel-tv/api-gateway/src/main/java/com/zeljko/apigateway/ApiGatewayApplication.java
+/home/zstojkovic00/IdeaProjects/microservices-new/api-gateway/src/main/java/com/zeljko/apigateway/config/CorsConfig.java
+/home/zstojkovic00/IdeaProjects/microservices-new/api-gateway/src/main/java/com/zeljko/apigateway/ApiGatewayApplication.java
+/home/zstojkovic00/IdeaProjects/microservices-new/api-gateway/src/main/java/com/zeljko/apigateway/filter/RouteValidator.java
+/home/zstojkovic00/IdeaProjects/microservices-new/api-gateway/src/main/java/com/zeljko/apigateway/filter/AuthenticationFilter.java
+/home/zstojkovic00/IdeaProjects/microservices-new/api-gateway/src/main/java/com/zeljko/apigateway/util/JwtService.java
+/home/zstojkovic00/IdeaProjects/microservices-new/api-gateway/src/main/java/com/zeljko/apigateway/config/AppConfig.java
