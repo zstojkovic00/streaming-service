@@ -1,7 +1,6 @@
 package com.zeljko.videoservice.controller;
 
 
-import com.zeljko.videoservice.dto.UpdateProgressVideo;
 import com.zeljko.videoservice.dto.VideoMetadata;
 import com.zeljko.videoservice.dto.VideoMetadataRequest;
 import com.zeljko.videoservice.model.StreamBytesInfo;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.InputStream;
-import java.text.DecimalFormat;
 import java.util.List;
 
 @RestController
@@ -84,18 +82,6 @@ public class VideoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
         return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
-    @PutMapping("/progress")
-    public ResponseEntity<String> updateVideoProgress(@RequestBody UpdateProgressVideo request) {
-        videoService.updateVideoProgress(
-                request.getVideoId(),
-                request.getUserId(),
-                request.getProgress(),
-                request.isWatched(),
-                request.getGenre()
-        );
-        return ResponseEntity.ok("Video progress updated successfully");
     }
 
 }

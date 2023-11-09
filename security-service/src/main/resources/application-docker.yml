@@ -13,11 +13,3 @@ spring:
     username: root
     password: zeljkoo123
     driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    hibernate:
-      format_sql: true
-      ddl-auto: update
-    database: mysql
-    database-platform: org.hibernate.dialect.MySQL8Dialect
-  main:
-    allow-bean-definition-overriding: true

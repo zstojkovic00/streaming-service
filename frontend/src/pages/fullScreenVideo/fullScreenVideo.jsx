@@ -4,7 +4,7 @@ import {useParams} from "react-router-dom";
 import "./fullScreenVideo.scss";
 import {Link} from "react-router-dom";
 import {getCurrentUser} from "../../services/authenticationService";
-import {updateVideoProgress, getToken, getVideoById} from "../../services/videoService";
+import {updateVideoProgress, getToken, getVideoById, getCurrentUserVideoProgress} from "../../services/videoService";
 
 
 const FullScreenVideo = () => {
@@ -14,8 +14,6 @@ const FullScreenVideo = () => {
     const [userId, setUserId] = useState(null);
     const [genre, setGenre] = useState(null);
     const [lastProgressSent, setLastProgressSent] = useState(null);
-
-
     const token = getToken();
 
 
@@ -30,6 +28,19 @@ const FullScreenVideo = () => {
             console.log(err)
         })
 
+        getCurrentUserVideoProgress(videoId)
+            .then((response) => {
+                const progress = response.data.progress;
+                console.log(progress);
+                if (videoRef.current) {
+                    const duration = videoRef.current.duration;
+                    const targetTime = (progress / 100) * duration;
+                    videoRef.current.currentTime = targetTime;
+                }
+            }).catch((err) => {
+            console.log(err);
+        })
+
         getCurrentUser()
             .then((response) => {
                 setUserId(response.data.id);
@@ -38,8 +49,6 @@ const FullScreenVideo = () => {
                 console.log(err);
             });
     }, []);
-
-
 
 
     const handleTimeUpdate = () => {
@@ -66,8 +75,6 @@ const FullScreenVideo = () => {
             }
         }
     }
-
-
 
     return (
         <div className="watch">

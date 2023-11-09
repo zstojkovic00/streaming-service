@@ -111,6 +111,7 @@ public class BadgeService {
                 entity,
                 UserDTO.class
         );
+
         if(response.getStatusCode() == HttpStatus.OK){
             UserDTO userDTO = response.getBody();
 

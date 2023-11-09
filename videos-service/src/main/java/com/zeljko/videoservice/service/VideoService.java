@@ -2,17 +2,13 @@ package com.zeljko.videoservice.service;
 
 import com.zeljko.videoservice.dto.VideoMetadata;
 import com.zeljko.videoservice.dto.VideoMetadataRequest;
-import com.zeljko.videoservice.dto.VideoProgressMessage;
 import com.zeljko.videoservice.model.StreamBytesInfo;
 import com.zeljko.videoservice.model.Video;
-import com.zeljko.videoservice.model.VideoProgress;
-import com.zeljko.videoservice.repository.VideoProgressRepository;
 import com.zeljko.videoservice.repository.VideoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpRange;
-import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,9 +34,7 @@ public class VideoService {
     private String dataFolder;
 
     private final VideoRepository videoRepository;
-    private final VideoProgressRepository videoProgressRepository;
     private final FrameGrabberService frameGrabberService;
-    private final KafkaTemplate<String, VideoProgressMessage> kafkaTemplate;
 
 
     public List<VideoMetadata> findAllVideoMetadata() {
@@ -53,7 +47,6 @@ public class VideoService {
     public Optional<VideoMetadata> findById(String id) {
         return videoRepository.findById(id).map(VideoService::convert);
     }
-
 
     @Transactional
     public void saveNewVideo(VideoMetadataRequest videoMetadataRequest) {
@@ -156,42 +149,4 @@ public class VideoService {
             return Optional.empty();
         }
     }
-
-    public void updateVideoProgress(String videoId, String userId, Double progress, boolean watched, String genre) {
-        log.debug("Updating video progress for videoId: {}, userId: {}, progress: {}, is movie watched: {}, genre: {}", videoId, userId, progress, watched, genre);
-
-
-        if (userId == null || userId.isEmpty()) {
-            log.info("userId is null or empty, exiting updateVideoProgress");
-            return;
-        }
-
-        Optional<VideoProgress> existingProgress = videoProgressRepository.findByVideoIdAndUserId(videoId, userId);
-        VideoProgress videoProgress;
-
-        if (existingProgress.isPresent()) {
-            videoProgress = existingProgress.get();
-        } else {
-            videoProgress = new VideoProgress();
-            videoProgress.setVideoId(videoId);
-            videoProgress.setUserId(userId);
-        }
-
-        videoProgress.setProgress(progress);
-        videoProgress.setWatched(watched);
-        videoProgress.setGenre(genre);
-
-        videoProgressRepository.save(videoProgress);
-
-         kafkaTemplate.send("video-progress", new VideoProgressMessage(
-                 videoProgress.getVideoId(),
-                 videoProgress.getUserId(),
-                 videoProgress.getProgress(),
-                 videoProgress.isWatched(),
-                 videoProgress.getGenre()
-         ));
-    }
-
-
-
 }
