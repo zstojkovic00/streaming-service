@@ -38,11 +38,6 @@ public class VideoProgressService {
 
         if (existingProgress.isPresent()) {
             videoProgress = existingProgress.get();
-
-            if (videoProgress.isWatched()) {
-                log.info("Video is already marked as watched, exiting updateVideoProgress");
-                return;
-            }
         } else {
             videoProgress = new VideoProgress();
             videoProgress.setVideoId(videoId);
