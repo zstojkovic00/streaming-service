@@ -17,7 +17,7 @@
   <name>microservices-new</name>
   <url>http://maven.apache.org</url>
   <modules>
-    <module>videos-service</module>
+    <module>video-service</module>
     <module>security-service</module>
     <module>badge-service</module>
     <module>discovery-server</module>
