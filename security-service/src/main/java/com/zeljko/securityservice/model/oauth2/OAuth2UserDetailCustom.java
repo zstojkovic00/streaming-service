@@ -1,10 +1,14 @@
 package com.zeljko.securityservice.model.oauth2;
 
+import com.zeljko.securityservice.model.Role;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.List;
@@ -14,17 +18,20 @@ import java.util.Map;
 @NoArgsConstructor
 public class OAuth2UserDetailCustom implements OAuth2User, UserDetails {
 
-    private Long id;
+    private int id;
     private String username;
     private String password;
-    private List<GrantedAuthority> authorities;
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+
     private Map<String, Object> attributes;
 
-    public OAuth2UserDetailCustom(Long id, String username, String password, List<GrantedAuthority> authorities) {
+    public OAuth2UserDetailCustom(int id, String username, String password, Role role) {
         this.id = id;
         this.username = username;
         this.password = password;
-        this.authorities = authorities;
+        this.role = role;
     }
 
     @Override
@@ -70,7 +77,8 @@ public class OAuth2UserDetailCustom implements OAuth2User, UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+
+        return role.getAuthorities();
     }
 
     @Override
