@@ -9,12 +9,19 @@ spring:
   jpa:
     hibernate:
       format_sql: true
-      ddl-auto: update
+      ddl-auto: create-drop
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
   main:
     allow-bean-definition-overriding: true
 
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            clientId: {clientId}
+            clientSecret: {clientSecret}
 
 server:
   port: 9191

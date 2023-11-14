@@ -35,8 +35,11 @@ public class UserCredential implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return role.getAuthorities();
     }
+
+    @Column(name = "provider_id")
+    private String providerId;
 
     @Override
     public String getUsername() {
