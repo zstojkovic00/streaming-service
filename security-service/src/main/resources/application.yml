@@ -15,6 +15,13 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            clientId: {clientId}
+            clientSecret: {clientSecret}
 
 server:
   port: 9191
