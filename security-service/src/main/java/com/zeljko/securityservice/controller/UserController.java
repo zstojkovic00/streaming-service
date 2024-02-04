@@ -5,10 +5,10 @@ import com.zeljko.securityservice.model.UserCredential;
 import com.zeljko.securityservice.service.UserService;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,4 +32,10 @@ public class UserController {
         return userService.getCurrentUserInfo(principal).orElseThrow(NotFoundException::new);
     }
 
+    @GetMapping("/index")
+    public String hello(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        model.addAttribute("authenticated", authentication);
+        return "home";
+    }
 }

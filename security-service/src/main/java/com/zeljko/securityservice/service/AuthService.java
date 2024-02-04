@@ -1,5 +1,6 @@
 package com.zeljko.securityservice.service;
 
+import com.zeljko.securityservice.model.Provider;
 import com.zeljko.securityservice.request.AuthRequest;
 import com.zeljko.securityservice.request.AuthResponse;
 import com.zeljko.securityservice.request.RegisterRequest;
@@ -29,7 +30,8 @@ public class AuthService {
                 .name(request.getUsername())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
+                .role(request.getRole())
+                .providerId(Provider.local.name())
                 .build();
 
         repository.save(user);

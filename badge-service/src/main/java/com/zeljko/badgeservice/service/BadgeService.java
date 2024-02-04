@@ -65,7 +65,7 @@ public class BadgeService {
                     .orElseGet(() -> UserBadges.builder().userId(userId).badges(new ArrayList<>()).build());
 
 
-//            if (!badges.getBadges().contains(badge))
+            if (!badges.getBadges().contains(badge))
             {
                 badges.getBadges().add(badge);
                 userBadgesRepository.save(badges);
@@ -73,9 +73,9 @@ public class BadgeService {
                 log.info("Bedz aktiviran");
                 notificationService.sendNotification(userId, "Badge is activated" + badgeName);
             }
-//            else {
-//                log.info("Korisnik već ima ovaj bedž");
-//            }
+            else {
+                log.info("Korisnik već ima ovaj bedž");
+            }
         } catch (Exception e) {
             log.error("Error activating badge for user: " + e.getMessage(), e);
         }
@@ -111,6 +111,7 @@ public class BadgeService {
                 entity,
                 UserDTO.class
         );
+
         if(response.getStatusCode() == HttpStatus.OK){
             UserDTO userDTO = response.getBody();
 
