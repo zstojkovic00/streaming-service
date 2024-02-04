@@ -120,6 +120,7 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>video-service</finalName>
     </build>
 
 </project>

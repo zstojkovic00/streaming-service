@@ -1,24 +1,24 @@
-version: '3'
 services:
 
-  mysql:
-    container_name: mysqldb
-    image: mysql
-    ports:
-      - "3306:3306"
-    expose:
-      - "3306"
-    restart: always
+  video-service:
+    container_name: video-service
+    image: video-service
     environment:
-      MYSQL_DATABASE: user_security
-      MYSQL_USER: root
-      MYSQL_PASSWORD: zeljkoo123
-      MYSQL_ROOT_PASSWORD: zeljkoo123
-    volumes:
-      - mysql-data:/var/lib/mysql
-    networks:
-      - microservices-network
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - mongo
+      - broker
 
+  mongo:
+    container_name: mongo
+    image: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    expose:
+      - "27017"
+    volumes:
+      - ./mongo-data:/data/db
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.0.1
