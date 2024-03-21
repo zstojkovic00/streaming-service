@@ -3,7 +3,7 @@ spring:
     name: badge-service
   data:
     mongodb:
-      uri: mongodb://localhost:27017/badge-service
+      uri: mongodb://localhost:27018/badge-service
 
   kafka:
     bootstrap-servers: localhost:9092

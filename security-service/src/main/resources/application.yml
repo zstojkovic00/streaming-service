@@ -2,8 +2,8 @@ spring:
   application:
     name: security-service
   datasource:
-    url: jdbc:mysql://localhost:3306/user_security
-    username: root
+    url: jdbc:mysql://localhost:3307/user_security
+    username: zeljko
     password: zeljkoo123
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
@@ -15,13 +15,13 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
-  security:
-    oauth2:
-      client:
-        registration:
-          github:
-            clientId: {clientId}
-            clientSecret: {clientSecret}
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          github:
+#            clientId: {clientId}
+#            clientSecret: {clientSecret}
 
 server:
   port: 9191

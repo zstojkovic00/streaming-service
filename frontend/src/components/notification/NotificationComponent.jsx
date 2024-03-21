@@ -40,12 +40,7 @@ const NotificationComponent = () => {
 
     return (
         <div>
-            <h2>Notifikacije</h2>
-            <ul>
-                {notifications.map((notification, index) => (
-                    <li key={index}>{notification.message}</li>
-                ))}
-            </ul>
+
         </div>
     );
 };

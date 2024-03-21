@@ -77,7 +77,6 @@ public class VideoController {
     public ResponseEntity<Void> uploadVideo(VideoMetadataRequest videoMetadataRequest) {
         try {
             videoService.saveNewVideo(videoMetadataRequest);
-
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

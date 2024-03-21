@@ -38,21 +38,13 @@ public class BadgeService {
     private final RestTemplate restTemplate;
     private final NotificationService notificationService;
 
-
-
-
     @KafkaListener(topics = "video-progress")
     public void processVideoProgress(VideoProgressMessage progressMessage) {
-        log.info("user id: {}, video id: {}, progress: {}, isMovieWatched: {}, genre: {}",
-                progressMessage.getVideoId()
-                ,progressMessage.getUserId()
-                ,progressMessage.getProgress()
-                ,progressMessage.isWatched()
-                ,progressMessage.getGenre()
-        );
+        log.info("user id: {}, video id: {}, progress: {}, isMovieWatched: {}, genre: {}", progressMessage.getVideoId(), progressMessage.getUserId(),
+                progressMessage.getProgress(), progressMessage.isWatched(), progressMessage.getGenre());
 
         if ("Marvel".equals(progressMessage.getGenre()) && progressMessage.isWatched()) {
-                activateBadgeForUser(progressMessage.getVideoId(), "Marvel Badge");
+            activateBadgeForUser(progressMessage.getVideoId(), "Marvel Badge");
         }
     }
 
@@ -65,21 +57,20 @@ public class BadgeService {
                     .orElseGet(() -> UserBadges.builder().userId(userId).badges(new ArrayList<>()).build());
 
 
-            if (!badges.getBadges().contains(badge))
-            {
+            if (!badges.getBadges().contains(badge)) {
                 badges.getBadges().add(badge);
                 userBadgesRepository.save(badges);
 
                 log.info("Bedz aktiviran");
                 notificationService.sendNotification(userId, "Badge is activated" + badgeName);
-            }
-            else {
+            } else {
                 log.info("Korisnik već ima ovaj bedž");
             }
         } catch (Exception e) {
             log.error("Error activating badge for user: " + e.getMessage(), e);
         }
     }
+
     @Transactional
     public void createBadge(MultipartFile file, String name, String description) throws IOException {
         Badge badge = new Badge();
@@ -97,8 +88,6 @@ public class BadgeService {
 
 
     public ResponseEntity<Optional<UserBadges>> getBadgesForCurrentUser(String bearerToken) {
-
-
         HttpHeaders headers = new HttpHeaders();
         bearerToken = bearerToken.substring(7);
         headers.setBearerAuth(bearerToken);
@@ -111,12 +100,9 @@ public class BadgeService {
                 entity,
                 UserDTO.class
         );
-
-        if(response.getStatusCode() == HttpStatus.OK){
+        if (response.getStatusCode() == HttpStatus.OK) {
             UserDTO userDTO = response.getBody();
-
             int userId = userDTO.getId();
-
             Optional<UserBadges> badges = userBadgesRepository.findByUserId(String.valueOf(userId));
 
             return ResponseEntity.ok(badges);

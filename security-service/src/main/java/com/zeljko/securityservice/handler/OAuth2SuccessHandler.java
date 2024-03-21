@@ -1,3 +1,4 @@
+/*
 package com.zeljko.securityservice.handler;
 
 
@@ -65,3 +66,4 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         super.onAuthenticationSuccess(request, response, authentication);
     }
 }
+*/

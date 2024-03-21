@@ -23,10 +23,8 @@ public class VideoProgressService {
     private final VideoProgressRepository videoProgressRepository;
     private final RestTemplate restTemplate;
 
-
     public void updateVideoProgress(String videoId, String userId, Double progress, boolean watched, String genre) {
-        log.debug("Updating video progress for videoId: {}, userId: {}, progress: {}, is movie watched: {}, genre: {}", videoId, userId, progress, watched, genre);
-
+        log.info("Updating video progress for videoId: {}, userId: {}, progress: {}, is movie watched: {}, genre: {}", videoId, userId, progress, watched, genre);
 
         if (userId == null || userId.isEmpty()) {
             log.info("userId is null or empty, exiting updateVideoProgress");
@@ -48,7 +46,7 @@ public class VideoProgressService {
         videoProgress.setWatched(watched);
         videoProgress.setGenre(genre);
 
-        videoProgressRepository.save(videoProgress);
+//        videoProgressRepository.save(videoProgress);
 
         kafkaTemplate.send("video-progress", new VideoProgressMessage(
                 videoProgress.getVideoId(),

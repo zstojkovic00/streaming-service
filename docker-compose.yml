@@ -1,19 +1,16 @@
 version: '3.7'
 services:
-
   ## MySQL Docker Compose Config
   mysql:
     container_name: mysqldb
     image: mysql
     ports:
       - "3307:3306"
-    expose:
-      - "3306"
     restart: always
     environment:
       MYSQL_DATABASE: user_security
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
+      MYSQL_USER: zeljko
+      MYSQL_PASSWORD: zeljkoo123
       MYSQL_ROOT_PASSWORD: zeljkoo123
     volumes:
       - mysqldb:/var/lib/mysql
@@ -30,89 +27,31 @@ services:
     volumes:
       - ./mongo-data:/data/db
 
-  ## Kafka Docker Compose Config
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.0.1
-    container_name: zookeeper
-    ports:
-      - "2181:2181"
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-
-  broker:
-    image: confluentinc/cp-kafka:7.0.1
-    container_name: broker
+  kafka_b:
+    image: docker.io/bitnami/kafka:3.4
+    hostname: kafka_b
     ports:
       - "9092:9092"
-    depends_on:
-      - zookeeper
+      - "9094:9094"
+    volumes:
+      - "kafka_data:/bitnami"
     environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092,PLAINTEXT_INTERNAL://broker:29092
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-
-  ## Discovery Server Docker Compose Config
-  discovery-server:
-    image: registry.hub.docker.com/zstojkovic00/discovery-server:latest
-    container_name: discovery-server
-    ports:
-      - "8761:8761"
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-
-  ## Api Gateway Docker Compose Config
-  api-gateway:
-    image: registry.hub.docker.com/zstojkovic00/api-gateway:latest
-    container_name: api-gateway
-    ports:
-      - "8181:8080"
-    expose:
-      - "8181"
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY= TRACE
-    depends_on:
-      - discovery-server
-
-  ## Video Service Docker Compose Config
-  video-service:
-    image: registry.hub.docker.com/zstojkovic00/videos-service:latest
-    container_name: video-service
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-    depends_on:
-      - mongo
-      - discovery-server
-      - api-gateway
-      - broker
-
-  ## Security Service Docker Compose Config
-  security-service:
-    image: registry.hub.docker.com/zstojkovic00/security-service:latest
-    container_name: security-service
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-    depends_on:
-      - mysql
-      - discovery-server
-      - api-gateway
-
-  ## Badge Service Docker Compose Config
-  badge-service:
-    image: registry.hub.docker.com/zstojkovic00/badge-service:latest
-    container_name: badge-service
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-    depends_on:
-      - mongo
-      - discovery-server
-      - api-gateway
-      - broker
+      - KAFKA_ENABLE_KRAFT=yes
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://127.0.0.1:9092,EXTERNAL://kafka_b:9094
+      - KAFKA_BROKER_ID=1
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@127.0.0.1:9093
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_NODE_ID=1
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
+      - BITNAMI_DEBUG=yes
+      - KAFKA_CFG_NUM_PARTITIONS=2
 
 volumes:
   mysqldb:
+  kafka_data:
+    driver: local
+

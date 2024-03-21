@@ -38,7 +38,7 @@ public class SecurityServiceApplication {
                     .role(USER)
                     .build();
 
-            System.out.println("ADMIN token " + service.register(zeljko).getToken());
+            System.out.println("Admin token " + service.register(zeljko).getToken());
             System.out.println("User token " + service.register(user).getToken());
         };
     }

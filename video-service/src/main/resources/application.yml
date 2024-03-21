@@ -3,7 +3,7 @@ spring:
     name: video-service
   data:
     mongodb:
-      uri: mongodb://localhost:27017/video-service
+      uri: mongodb://localhost:27018/video-service
   servlet:
     multipart:
       enabled: true
@@ -38,4 +38,4 @@ logging:
             VideoService: DEBUG
 
 data:
-  folder: /home/zstojkovic00/IdeaProjects/yettel-tv/video-service/data
+  folder: /home/zstojkovic00/IdeaProjects/streaming-service/video-service/data

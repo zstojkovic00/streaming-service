@@ -1,4 +1,4 @@
-package com.zeljko.securityservice.handler;
+/*package com.zeljko.securityservice.handler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,4 +16,4 @@ public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler 
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws ServletException, IOException {
             getRedirectStrategy().sendRedirect(request, response, "/login");
     }
-}
+}*/
