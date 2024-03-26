@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.util.List;
 
 @RestController
@@ -67,9 +68,9 @@ public class VideoController {
                             "-" + streamBytesInfo.getRangeEnd() +
                             "/" + streamBytesInfo.getFileSize());
         }
-//        log.info("Providing bytes from {} to {}. We are at {}% of overall video.",
-//                streamBytesInfo.getRangeStart(), streamBytesInfo.getRangeEnd(),
-//                new DecimalFormat("###.##").format(100.0 * streamBytesInfo.getRangeStart() / streamBytesInfo.getFileSize()));
+        log.info("Providing bytes from {} to {}. We are at {}% of overall video.",
+                streamBytesInfo.getRangeStart(), streamBytesInfo.getRangeEnd(),
+                new DecimalFormat("###.##").format(100.0 * streamBytesInfo.getRangeStart() / streamBytesInfo.getFileSize()));
         return builder.body(streamBytesInfo.getResponseBody());
     }
 

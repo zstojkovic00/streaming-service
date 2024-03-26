@@ -13,7 +13,7 @@ const NotificationComponent = () => {
             console.log(response.data);
         });
     }, []);
-
+/*
     useEffect(() => {
         if (userId) {
 
@@ -36,7 +36,7 @@ const NotificationComponent = () => {
 
 
         }
-    }, [userId]);
+    }, [userId]);*/
 
     return (
         <div>

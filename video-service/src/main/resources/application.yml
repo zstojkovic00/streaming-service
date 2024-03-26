@@ -11,6 +11,7 @@ spring:
       max-request-size: 200MB
   kafka:
     bootstrap-servers: localhost:9092
+
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
@@ -19,6 +20,7 @@ spring:
         spring.json.trusted.packages: "*"
     template:
       default-topic: video-progress
+
 server:
   port: 8081
 
@@ -38,4 +40,8 @@ logging:
             VideoService: DEBUG
 
 data:
-  folder: /home/zstojkovic00/IdeaProjects/streaming-service/video-service/data
+  folder: C:\Users\zstojkovic\IdeaProjects\streaming-service/video-service/data
+
+api:
+  base: http://localhost:8080/user/current
+

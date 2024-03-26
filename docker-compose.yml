@@ -16,16 +16,15 @@ services:
       - mysqldb:/var/lib/mysql
 
   ## Mongo Docker Compose Config
-  mongo:
-    container_name: mongo
-    image: mongo:4.4.14-rc0-focal
-    restart: always
+  mongodb:
+    image: mongo:latest
     ports:
       - "27018:27017"
-    expose:
-      - "27017"
+#    environment:
+#      - MONGO_INITDB_ROOT_USERNAME=admin
+#      - MONGO_INITDB_ROOT_PASSWORD=password
     volumes:
-      - ./mongo-data:/data/db
+      - mongo-data:/data/db
 
   kafka_b:
     image: docker.io/bitnami/kafka:3.4
@@ -53,5 +52,7 @@ services:
 volumes:
   mysqldb:
   kafka_data:
+    driver: local
+  mongo-data:
     driver: local
 

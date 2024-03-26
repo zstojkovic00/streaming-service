@@ -13,7 +13,7 @@ public interface VideoProgressRepository extends MongoRepository<VideoProgress, 
     Optional<VideoProgress> findByVideoIdAndUserId(String videoId, String userId);
 
     @Query(value = "{'userId' : ?0, 'videoId' : ?1}", fields = "{'progress' : 1}")
-    WatchedProgress findProgressByUserIdAndVideoId(String userId, String videoId);
+    Optional<WatchedProgress> findProgressByUserIdAndVideoId(String userId, String videoId);
 
 
 }

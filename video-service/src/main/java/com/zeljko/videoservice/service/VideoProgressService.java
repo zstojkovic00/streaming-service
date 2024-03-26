@@ -7,6 +7,7 @@ import com.zeljko.videoservice.model.VideoProgress;
 import com.zeljko.videoservice.repository.VideoProgressRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,9 @@ public class VideoProgressService {
     private final KafkaTemplate<String, VideoProgressMessage> kafkaTemplate;
     private final VideoProgressRepository videoProgressRepository;
     private final RestTemplate restTemplate;
+
+    @Value("${api.base}")
+    private String apiBase;
 
     public void updateVideoProgress(String videoId, String userId, Double progress, boolean watched, String genre) {
         log.info("Updating video progress for videoId: {}, userId: {}, progress: {}, is movie watched: {}, genre: {}", videoId, userId, progress, watched, genre);
@@ -46,40 +50,37 @@ public class VideoProgressService {
         videoProgress.setWatched(watched);
         videoProgress.setGenre(genre);
 
-//        videoProgressRepository.save(videoProgress);
+        videoProgressRepository.save(videoProgress);
 
-        kafkaTemplate.send("video-progress", new VideoProgressMessage(
-                videoProgress.getVideoId(),
-                videoProgress.getUserId(),
-                videoProgress.getProgress(),
-                videoProgress.isWatched(),
-                videoProgress.getGenre()
-        ));
+        kafkaTemplate.send("video-progress", new VideoProgressMessage(videoProgress.getVideoId(), videoProgress.getUserId(),
+                videoProgress.getProgress(), videoProgress.isWatched(), videoProgress.getGenre()));
     }
 
-    public WatchedProgress getCurrentUserProgress(String bearerToken, String videoId) {
+    public Optional<WatchedProgress> findCurrentUserProgress(String bearerToken, String videoId) {
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        bearerToken = bearerToken.substring(7);
-        httpHeaders.setBearerAuth(bearerToken);
+        String userId = findCurrentUserId(bearerToken);
 
-        HttpEntity<Void> entity = new HttpEntity<>(httpHeaders);
+        if (userId.isEmpty()) {
+            return Optional.empty();
+        }
 
-        ResponseEntity<UserDTO> response = restTemplate.exchange(
-                "http://localhost:8080/user/current",
-                HttpMethod.GET,
-                entity,
-                UserDTO.class
-        );
+        return videoProgressRepository.findProgressByUserIdAndVideoId(userId, videoId);
+    }
+
+    private String findCurrentUserId(String bearerToken) {
+        var headers = new HttpHeaders();
+        String token = bearerToken.substring(7);
+        headers.setBearerAuth(token);
+
+        var entity = new HttpEntity<>(headers);
+        var response = restTemplate.exchange(apiBase, HttpMethod.GET, entity, UserDTO.class);
 
         if (response.getStatusCode() == HttpStatus.OK) {
-            UserDTO userDTO = response.getBody();
+            var userDTO = response.getBody();
 
             String userId = String.valueOf(userDTO.getId());
-
-            return videoProgressRepository.findProgressByUserIdAndVideoId(userId, videoId);
-        } else {
-            return null;
+            return userId;
         }
+        return null;
     }
 }
