@@ -12,8 +12,4 @@ The API Gateway orchestrates communication with security-service, tasked with us
 
 
 # Project Diagram
-![diagram.png](..%2F..%2FDocuments%2Fdiagram.png)
-
-
-API documentation:
-https://documenter.getpostman.com/view/28489900/2sA35A74yQ
+![img.png](img.png)
