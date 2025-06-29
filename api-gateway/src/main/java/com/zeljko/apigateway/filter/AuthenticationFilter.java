@@ -12,14 +12,13 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class AuthenticationFilter extends AbstractGatewayFilterFactory<AuthenticationFilter.Config> {
 
-    @Autowired
-    private RouteValidator validator;
+    private final RouteValidator validator;
+    private final JwtService jwtService;
 
-    @Autowired
-    private JwtService jwtService;
-
-    public AuthenticationFilter() {
+    public AuthenticationFilter(RouteValidator validator, JwtService jwtService) {
         super(Config.class);
+        this.validator = validator;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -27,7 +26,6 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
         return ((exchange, chain) -> {
 
             if (validator.isSecured.test(exchange.getRequest())) {
-                //header contains token or not
                 if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                     throw new RuntimeException("missing authorization header");
                 }
@@ -51,7 +49,5 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
         });
     }
 
-    public static class Config {
-
-    }
+    public static class Config {}
 }

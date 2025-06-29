@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.1.1</version>
+    <version>3.5.3</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
@@ -19,17 +19,16 @@
   <modules>
     <module>video-service</module>
     <module>security-service</module>
-    <module>badge-service</module>
     <module>discovery-server</module>
     <module>api-gateway</module>
   </modules>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
-    <spring-cloud.version>2022.0.3</spring-cloud.version>
-    <testcontainers.version>1.17.6</testcontainers.version>
+    <maven.compiler.source>24</maven.compiler.source>
+    <maven.compiler.target>24</maven.compiler.target>
+    <spring-cloud.version>2025.0.0</spring-cloud.version>
+    <testcontainers.version>1.19.8</testcontainers.version>
   </properties>
 
 
@@ -54,18 +53,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <exclude>
-              <groupId>org.projectlombok</groupId>
-              <artifactId>lombok</artifactId>
-            </exclude>
-          </excludes>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>

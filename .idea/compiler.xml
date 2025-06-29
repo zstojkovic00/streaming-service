@@ -8,13 +8,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="api-gateway" />
-        <module name="badge-service" />
         <module name="discovery-server" />
         <module name="videos-service" />
         <module name="security-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="badge-service" target="17" />
       <module name="video-service" target="17" />
     </bytecodeTargetLevel>
   </component>

@@ -1,47 +1,39 @@
 spring:
   application:
     name: video-service
+
   data:
     mongodb:
       uri: mongodb://localhost:27018/video-service
+
   servlet:
     multipart:
       enabled: true
       max-file-size: 200MB
       max-request-size: 200MB
+
   kafka:
     bootstrap-servers: localhost:9092
-
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      properties:
-        "[spring.json.type.mapping]": dto:com.zeljko.videoservice.dto.VideoProgressMessage
-        spring.json.trusted.packages: "*"
-    template:
-      default-topic: video-progress
+      timeout-millis: 1000
+      topic:
+        video-progress: video-progress
+
+
+#  threads:
+#    virtual:
+#      enabled: true
 
 server:
   port: 8081
-
-
 
 eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka
 
-logging:
-  level:
-    com:
-      zeljko:
-        videoservice:
-          service:
-            VideoService: DEBUG
-
 data:
-  folder: C:\Users\zstojkovic\IdeaProjects\streaming-service/video-service/data
-
-api:
-  base: http://localhost:8080/user/current
+  folder: s3
 

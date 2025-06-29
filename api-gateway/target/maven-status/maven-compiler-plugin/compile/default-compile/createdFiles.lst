@@ -1,7 +1,0 @@
-com/zeljko/apigateway/config/CorsConfig.class
-com/zeljko/apigateway/config/AppConfig.class
-com/zeljko/apigateway/util/JwtService.class
-com/zeljko/apigateway/filter/RouteValidator.class
-com/zeljko/apigateway/filter/AuthenticationFilter$Config.class
-com/zeljko/apigateway/ApiGatewayApplication.class
-com/zeljko/apigateway/filter/AuthenticationFilter.class

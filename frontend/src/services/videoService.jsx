@@ -7,7 +7,7 @@ export const getToken = () => {
 export const getAllVideos = () => {
     return axios({
         method: 'GET',
-        url: "http://localhost:8080/api/v1/video/all",
+        url: "http://localhost:8080/videos",
         headers: {
             'Authorization': 'Bearer ' + getToken()
         }
@@ -17,7 +17,7 @@ export const getAllVideos = () => {
 export const getVideoById = (videoId) => {
     return axios({
         method: 'GET',
-        url: `http://localhost:8080/api/v1/video/${videoId}`,
+        url: `http://localhost:8080/videos/${videoId}`,
         headers: {
             'Authorization': 'Bearer ' + getToken()
         }
@@ -27,33 +27,7 @@ export const getVideoById = (videoId) => {
 export const getStreamVideo = (videoId) => {
     return axios({
         method: 'GET',
-        url: "http://localhost:8080/api/v1/video/stream/{videoId}"
+        url: "http://localhost:8080/videos/stream/{videoId}"
     })
-}
 
-export const updateVideoProgress = (videoId, userId, progress, watched, genre) => {
-    return axios({
-        method: 'PUT',
-        url: `http://localhost:8080/api/v1/video/progress`,
-        data: {
-            videoId: videoId,
-            userId: userId,
-            progress: progress,
-            watched: watched,
-            genre: genre
-        },
-        headers: {
-            'Authorization': 'Bearer ' + getToken()
-        }
-    });
-}
-
-export const getCurrentUserVideoProgress = (videoId) => {
-    return axios({
-        method: 'GET',
-        url: `http://localhost:8080/api/v1/video/progress/${videoId}`,
-        headers: {
-            'Authorization': 'Bearer ' + getToken()
-        }
-    });
 }

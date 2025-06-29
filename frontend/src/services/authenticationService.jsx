@@ -23,7 +23,7 @@ export const userLogin = (authRequest) => {
 export const getCurrentUser = () => {
     return axios({
         'method': 'GET',
-        'url': "http://localhost:8080/user/current",
+        'url': "http://localhost:8080/users/principal",
         headers: {
             'Authorization': 'Bearer ' + getToken()
         }

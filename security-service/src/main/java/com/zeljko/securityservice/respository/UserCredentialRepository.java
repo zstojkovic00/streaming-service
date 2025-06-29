@@ -1,6 +1,6 @@
 package com.zeljko.securityservice.respository;
 
-import com.zeljko.securityservice.model.UserCredential;
+import com.zeljko.securityservice.respository.model.UserCredential;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

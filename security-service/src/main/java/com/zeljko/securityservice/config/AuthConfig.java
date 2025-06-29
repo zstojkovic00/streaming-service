@@ -1,9 +1,6 @@
 package com.zeljko.securityservice.config;
 
 import com.zeljko.securityservice.filter.AuthenticationFilter;
-/*import com.zeljko.securityservice.handler.OAuth2FailureHandler;
-import com.zeljko.securityservice.handler.OAuth2SuccessHandler;*/
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -17,12 +14,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 @EnableMethodSecurity
 public class AuthConfig {
 
     private final AuthenticationFilter authenticationFilter;
     private final AuthenticationProvider authenticationProvider;
+
+    public AuthConfig(AuthenticationFilter authenticationFilter, AuthenticationProvider authenticationProvider) {
+        this.authenticationFilter = authenticationFilter;
+        this.authenticationProvider = authenticationProvider;
+    }
 
 //    private final OAuth2SuccessHandler oAuth2SuccessHandler;
 

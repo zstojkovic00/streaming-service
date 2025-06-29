@@ -17,10 +17,10 @@ const ListItem = ({ video }) => {
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            <img src={`http://localhost:8080/api/v1/video/preview/${video.id}`} alt="spiderman" />
+            <img src={`http://localhost:8080/videos/preview/${video.id}`} alt="spiderman" />
             {isHovered && (
                 <>
-                    <video src={`http://localhost:8080/api/v1/video/stream/${video.id}`} autoPlay={true} loop />
+                    <video src={`http://localhost:8080/videos/stream/${video.id}`} autoPlay={true} loop />
                     <div className="itemInfo">
                         <div className="icons">
                             <Link to={`video/${video.title}/${video.id}`}>

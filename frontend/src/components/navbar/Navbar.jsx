@@ -6,14 +6,12 @@ import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import NotificationComponent from "../notification/NotificationComponent";
 
 
 const Navbar = () => {
 
     const navigate = useNavigate();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [notificationCount, setNotificationCount] = useState(0);
 
     useEffect(() => {
         const token = localStorage.getItem('USER_KEY')
@@ -96,7 +94,6 @@ const Navbar = () => {
                         </div>
 
                     </div>
-                    <NotificationComponent />
 
                 </div>
 

@@ -8,7 +8,6 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      format_sql: true
       ddl-auto: create-drop
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
